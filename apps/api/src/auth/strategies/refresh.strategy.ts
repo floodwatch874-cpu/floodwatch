@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import jwtRefreshConfig from 'src/config/jwt-refresh.config';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { ValidatedUser } from '../interfaces/validated-user.interface';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -15,6 +16,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
   constructor(
     @Inject(jwtRefreshConfig.KEY)
     private jwtRefreshConfiguration: ConfigType<typeof jwtRefreshConfig>,
+    private usersService: UsersService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -29,11 +31,13 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  validate(req: Request, payload: JwtPayload): ValidatedUser {
+  async validate(req: Request, payload: JwtPayload): Promise<ValidatedUser> {
     const token = req.cookies?.refresh_token as string | undefined;
+    const user = await this.usersService.findByIdWithProfile(payload.sub);
 
     return {
       id: payload.sub,
+      role: user.role,
       refresh_token: token,
     };
   }

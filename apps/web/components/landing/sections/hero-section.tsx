@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function HeroSection() {
   return (
-    <section className="relative flex items-center justify-center bg-[#0066CC] w-full min-h-screen px-4 md:px-0 py-20">
+    <section className="relative flex items-center justify-center bg-[#0066CC] w-full min-h-screen px-4 py-20">
       <div className="flex flex-col-reverse md:flex-row gap-10 items-center max-w-7xl justify-center w-full">
         {/* TEXT */}
         <div className="flex flex-col gap-6 max-w-2xl text-left order-2 md:order-1">

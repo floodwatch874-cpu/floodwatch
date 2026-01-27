@@ -13,6 +13,8 @@ import { JwtRefreshStrategy } from './strategies/refresh.strategy';
 import { TokenService } from './token/token.service';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { DrizzleModule } from 'src/drizzle/drizzle.module';
+import { MailerModule } from 'src/mailer/mailer.module';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { DrizzleModule } from 'src/drizzle/drizzle.module';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(jwtRefreshConfig),
+    MailerModule,
+    RedisModule,
   ],
   providers: [
     AuthService,

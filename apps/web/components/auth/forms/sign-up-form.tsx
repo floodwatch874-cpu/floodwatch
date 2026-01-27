@@ -8,11 +8,14 @@ import React, { useState } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
-import { signupClient } from '@/lib/auth/auth-api';
-import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { mapSignupAuthError } from '@/lib/auth/signup-auth-error';
+import { Spinner } from '@/components/ui/spinner';
+import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
 
-export default function SignUpform() {
-  const { setAuth } = useAuth();
+export default function SignUpForm() {
+  const router = useRouter();
+  const { refreshAuth } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -60,28 +63,33 @@ export default function SignUpform() {
     } = parsed.data;
 
     try {
-      const { deviceId, user } = await signupClient(
+      await api.post('/auth/signup', {
         first_name,
         last_name,
         home_address,
         email,
         password,
         confirm_password,
-      );
+      });
 
       setState({
         status: 'success',
         errors: {},
       });
 
-      setAuth(deviceId, user);
+      await refreshAuth();
 
       form.reset();
+      router.refresh();
     } catch (err) {
       setState({
-        errors: mapAuthError(err).errors,
+        errors: mapSignupAuthError(err).errors,
         status: 'error',
       });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
+      (form.elements.namedItem('confirm_password') as HTMLInputElement).value =
+        '';
     } finally {
       setIsPending(false);
     }
@@ -190,7 +198,13 @@ export default function SignUpform() {
         disabled={isPending}
         className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
       >
-        Register
+        {isPending ? (
+          <>
+            Signing up... <Spinner />
+          </>
+        ) : (
+          'Sign up'
+        )}
       </Button>
     </form>
   );

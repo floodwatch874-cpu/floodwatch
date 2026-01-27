@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { ActionState } from '@/lib/types/action-state';
 
-export function mapAuthError(err: unknown) {
+export function mapLoginAuthError(err: unknown): ActionState {
   if (axios.isAxiosError(err)) {
     if (err.response?.status === 401 || err.response?.status === 403) {
       return {
@@ -15,7 +16,6 @@ export function mapAuthError(err: unknown) {
     };
   }
 
-  console.log(err);
   return {
     errors: { _form: ['An unexpected error occurred'] },
     status: 'error',

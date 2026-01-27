@@ -9,11 +9,14 @@ import { ActionState } from '@/lib/types/action-state';
 import { useAuth } from '@/providers/auth-provider';
 import { logInSchema } from '@repo/schemas';
 import z from 'zod';
-import { loginClient } from '@/lib/auth/auth-api';
-import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { mapLoginAuthError } from '@/lib/auth/login-auth-error';
+import { useRouter } from 'next/navigation';
+import { Spinner } from '@/components/ui/spinner';
+import { api } from '@/lib/api';
 
 export default function LoginForm() {
-  const { setAuth } = useAuth();
+  const router = useRouter();
+  const { refreshAuth } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -48,21 +51,24 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      const { deviceId, user } = await loginClient(email, password);
+      await api.post('/auth/login', { email, password });
+
+      await refreshAuth();
 
       setState({
         errors: {},
         status: 'success',
       });
 
-      setAuth(deviceId, user);
-
       form.reset();
+      router.refresh();
     } catch (err) {
       setState({
-        errors: mapAuthError(err).errors,
+        errors: mapLoginAuthError(err).errors,
         status: 'error',
       });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
     } finally {
       setIsPending(false);
     }
@@ -111,7 +117,13 @@ export default function LoginForm() {
         type="submit"
         className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
       >
-        Login
+        {isPending ? (
+          <>
+            Logging in... <Spinner />
+          </>
+        ) : (
+          'Login'
+        )}
       </Button>
     </form>
   );

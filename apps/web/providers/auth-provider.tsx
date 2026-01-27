@@ -1,58 +1,50 @@
 'use client';
 
 import { api } from '@/lib/api';
-import { createContext, useCallback, useContext, useEffect } from 'react';
-import { clearAuth as clearAuthUtil } from '@/utils/auth-utils';
-import { User } from '@/lib/types/user';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
-  setAuth: (deviceId: string, user: User) => void;
-  clearAuth: () => void;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  refreshAuth: () => Promise<void>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  setAuth: () => {},
-  clearAuth: () => {},
-});
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const setAuth = useCallback((deviceId: string, user: User) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('deviceId', deviceId);
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const clearAuth = useCallback(() => {
-    clearAuthUtil();
-  }, []);
+  const refreshAuth = async () => {
+    try {
+      await api.post('/auth/refresh');
+      setIsAuthenticated(true);
+    } catch {
+      setIsAuthenticated(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.delete('/auth/logout');
+    } finally {
+      setIsAuthenticated(false);
+    }
+  };
 
   useEffect(() => {
-    const deviceId = localStorage.getItem('deviceId');
-    if (!deviceId) return;
-
-    const refreshAccessToken = async () => {
-      try {
-        const response = await api.post('/auth/refresh');
-        const { deviceId, user } = response.data;
-        if (deviceId) {
-          setAuth(deviceId, user);
-        } else {
-          clearAuth();
-        }
-      } catch (err) {
-        console.error('Refresh token failed', err);
-        clearAuth();
-      }
-    };
-
-    refreshAccessToken();
-  }, [setAuth, clearAuth]);
+    refreshAuth().finally(() => setIsLoading(false));
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ setAuth, clearAuth }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isLoading, refreshAuth, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

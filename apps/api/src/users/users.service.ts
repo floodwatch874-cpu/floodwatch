@@ -9,7 +9,7 @@ import { profileInfo } from 'src/drizzle/schemas/profile-info.schema';
 export class UsersService {
   constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
 
-  async findOne(email: string) {
+  async findByEmail(email: string) {
     const [user] = await this.db
       .select()
       .from(users)
@@ -62,5 +62,9 @@ export class UsersService {
       .returning();
 
     return { ...newUser, profile: newProfile };
+  }
+
+  async updatePassword(id: number, hashedPassword: string) {
+    await this.db.update(users).set({ hashedPassword }).where(eq(users.id, id));
   }
 }
