@@ -23,7 +23,7 @@ export default function AuthLayout({
 
           <div className="absolute inset-0 bg-black/50" />
 
-          <div className="relative z-10 flex h-full flex-col items-center justify-center px-12 text-white">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center px-12 text-white mx-auto text-center">
             <h2 className="mb-4 text-center text-4xl font-bold">
               Our flood <span className="text-[#0066CC]">tracking</span> website
               ensures safety

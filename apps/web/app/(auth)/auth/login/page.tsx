@@ -19,7 +19,7 @@ export default async function LoginPage() {
         <div className="flex justify-center gap-2 text-sm">
           <span className="opacity-50">Don&apos;t have an Account yet?</span>
           <Link href="/auth/sign-up" className="text-blue-600 hover:underline">
-            Register Here
+            Register here
           </Link>
         </div>
 

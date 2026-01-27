@@ -15,7 +15,7 @@ export default function ForgotPasswordForm() {
       </div>
 
       <Button className="w-full rounded-full bg-blue-600 hover:bg-blue-700">
-        Done
+        Submit
       </Button>
     </form>
   );

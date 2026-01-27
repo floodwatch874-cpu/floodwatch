@@ -129,7 +129,7 @@ export default function SignUpform() {
           id="email"
           name="email"
           type="email"
-          placeholder="Enter your Email"
+          placeholder="Enter your email"
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors && 'email' in state.errors && state.errors.email && (
@@ -142,7 +142,7 @@ export default function SignUpform() {
         <Input
           id="home_address"
           name="home_address"
-          placeholder="Enter your Home Address"
+          placeholder="Enter your home address"
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors &&
@@ -158,7 +158,7 @@ export default function SignUpform() {
           id="password"
           name="password"
           type="password"
-          placeholder="Enter your Password"
+          placeholder="Enter your password"
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors &&
@@ -174,7 +174,7 @@ export default function SignUpform() {
           id="confirm_password"
           name="confirm_password"
           type="password"
-          placeholder="Enter your Password"
+          placeholder="Re-enter your password"
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors &&
