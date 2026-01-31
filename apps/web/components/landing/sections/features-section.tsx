@@ -1,7 +1,11 @@
-import { UsersRound, MapPinned, ShieldCheck } from 'lucide-react';
+import {
+  IconUsersGroup,
+  IconMapPin2,
+  IconShieldCheck,
+} from '@tabler/icons-react';
 import FeatureCard from '@/components/landing/feature-card';
 
-export default function SystemFeatures() {
+export default function SafetyFeaturesSection() {
   return (
     <section id="features">
       <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4">
@@ -13,21 +17,21 @@ export default function SystemFeatures() {
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <FeatureCard
-            icon={UsersRound}
+            icon={IconUsersGroup}
             title="Community Posting"
             description="Users can view the newsfeed, create posts, like, comment, and share updates with others."
             color="bg-sky-400"
           />
 
           <FeatureCard
-            icon={MapPinned}
+            icon={IconMapPin2}
             title="Interactive Map"
             description="Users can see flooded areas based on a selected location using an interactive map."
             color="bg-teal-400"
           />
 
           <FeatureCard
-            icon={ShieldCheck}
+            icon={IconShieldCheck}
             title="Safety Guides"
             description="Users can read safety tips and prevention guides that help protect lives during disasters."
             color="bg-indigo-400"

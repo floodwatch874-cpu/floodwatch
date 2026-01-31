@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
 import { useRouter } from 'next/navigation';
 import { resetPasswordSchema } from '@repo/schemas';
@@ -20,6 +20,11 @@ export default function ResetPasswordForm() {
     status: null,
     errors: null,
   });
+
+  useEffect(() => {
+    sessionStorage.removeItem('reset_email');
+    sessionStorage.removeItem('otp_cooldown');
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -82,7 +87,7 @@ export default function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label>New Password</Label>
+        <Label htmlFor="new_password">New Password</Label>
         <Input
           id="new_password"
           name="new_password"
@@ -98,7 +103,7 @@ export default function ResetPasswordForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Confirm Password</Label>
+        <Label htmlFor="confirm_new_password">Confirm Password</Label>
         <Input
           id="confirm_new_password"
           name="confirm_new_password"

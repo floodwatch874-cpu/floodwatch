@@ -93,8 +93,6 @@ export default function VerifyOtpForm() {
         status: 'success',
       });
 
-      sessionStorage.removeItem('reset_email');
-      sessionStorage.removeItem('otp_cooldown');
       router.push('/auth/reset-password');
     } catch (err) {
       setState({

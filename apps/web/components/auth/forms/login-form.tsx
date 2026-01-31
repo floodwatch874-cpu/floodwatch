@@ -91,7 +91,7 @@ export default function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Password</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           name="password"

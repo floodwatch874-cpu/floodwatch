@@ -98,7 +98,7 @@ export default function SignUpForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label>Full name</Label>
+        <Label htmlFor="first_name">Full name</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <Input
@@ -132,7 +132,7 @@ export default function SignUpForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Email</Label>
+        <Label htmlFor="email">Email</Label>
         <Input
           id="email"
           name="email"
@@ -146,7 +146,7 @@ export default function SignUpForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Home Address</Label>
+        <Label htmlFor="home_address">Home Address</Label>
         <Input
           id="home_address"
           name="home_address"
@@ -161,7 +161,7 @@ export default function SignUpForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Password</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           name="password"
@@ -177,7 +177,7 @@ export default function SignUpForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Confirm Password</Label>
+        <Label htmlFor="confirm_password">Confirm Password</Label>
         <Input
           id="confirm_password"
           name="confirm_password"

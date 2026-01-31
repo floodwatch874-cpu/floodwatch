@@ -19,6 +19,7 @@ export default function AuthLayout({
             alt="flood rescue image"
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
 
           <div className="absolute inset-0 bg-black/50" />

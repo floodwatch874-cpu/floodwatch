@@ -1,5 +1,5 @@
 import LatestNewsCard from '../latest-news-card';
-export default function LatestNewsReport() {
+export default function LatestNewsReportSection() {
   return (
     <section id="latest-news">
       <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4">

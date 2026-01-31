@@ -66,7 +66,7 @@ export default function ForgotPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label>Email</Label>
+        <Label htmlFor="email">Email</Label>
         <Input
           type="email"
           name="email"

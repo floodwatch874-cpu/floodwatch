@@ -25,7 +25,7 @@ const visionText = `
   action to protect lives and properties.
 `;
 
-export default function AboutUs() {
+export default function AboutUsSection() {
   return (
     <section className="bg-white mt-auto" id="about-us">
       <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4 md:0">

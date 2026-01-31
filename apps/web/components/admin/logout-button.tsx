@@ -38,8 +38,8 @@ export default function Logoutbutton() {
         asChild
         className="text-lg hover:cursor-pointer"
       >
-        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent">
-          <IconLogout className="w-[1em]! h-[1em]!" aria-hidden />
+        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base">
+          <IconLogout className="w-[1.5em]! h-[1.5em]!" aria-hidden />
           {isPending ? <>Signing out...</> : 'Sign out'}
         </div>
       </SidebarMenuButton>

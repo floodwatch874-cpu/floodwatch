@@ -9,6 +9,8 @@ import Redis from 'ioredis';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return new Redis({
+          username: configService.getOrThrow('REDIS_USERNAME'),
+          password: configService.getOrThrow('REDIS_PASSWORD'),
           host: configService.getOrThrow('REDIS_HOST'),
           port: configService.getOrThrow('REDIS_PORT'),
         });

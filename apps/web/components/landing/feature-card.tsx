@@ -1,10 +1,12 @@
+import { Icon } from '@tabler/icons-react';
+
 export default function FeatureCard({
   icon: Icon,
   title,
   description,
   color,
 }: {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: Icon;
   title: string;
   description: string;
   color: string;
