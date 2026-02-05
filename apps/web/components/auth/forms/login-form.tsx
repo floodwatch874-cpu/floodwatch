@@ -6,18 +6,15 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
-import { useAuth } from '@/contexts/auth-context';
 import { logInSchema } from '@repo/schemas';
 import z from 'zod';
-import { mapLoginAuthError } from '@/lib/auth/login-auth-error';
-import { useRouter } from 'next/navigation';
+import { mapLoginAuthError } from '@/lib/services/auth/login-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { api } from '@/lib/api';
+import { mutate } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function LoginForm() {
-  const router = useRouter();
-  const { refreshAuth } = useAuth();
-
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
     status: null,
@@ -53,15 +50,13 @@ export default function LoginForm() {
     try {
       await api.post('/auth/login', { email, password });
 
-      await refreshAuth();
-
       setState({
         errors: {},
         status: 'success',
       });
 
       form.reset();
-      router.refresh();
+      await mutate(SWR_KEYS.me);
     } catch (err) {
       setState({
         errors: mapLoginAuthError(err).errors,

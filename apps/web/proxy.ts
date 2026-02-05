@@ -5,7 +5,7 @@ import { decodeJwt } from '@/lib/jwt';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = request.cookies.get('access_token')?.value;
+  const accessToken = request.cookies.get('refresh_token')?.value;
 
   const isAdminPath = pathname.startsWith('/admin');
   const isAuthRoute = pathname.startsWith('/auth');

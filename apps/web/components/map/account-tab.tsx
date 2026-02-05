@@ -12,9 +12,17 @@ import { Button } from '../ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import LogoutButton from '@/components/map/logout-button';
 import { useState } from 'react';
+import { useUser } from '@/hooks/use-user';
+import { format } from 'date-fns';
 
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
+  const { user } = useUser();
+
+  let formatted;
+  if (user) {
+    formatted = format(new Date(user?.createdAt), 'MMMM d, yyyy');
+  }
 
   return (
     <div className="flex flex-col gap-8 h-full">
@@ -34,7 +42,7 @@ export default function AccountTab() {
       <div className="flex flex-col gap-2 w-full text-xs mt-auto">
         <div className="flex justify-between">
           <span>Member since</span>
-          <span>October 5, 2025</span>
+          <span>{formatted}</span>
         </div>
         <div className="flex justify-between">
           <span>Posts</span>
@@ -45,17 +53,19 @@ export default function AccountTab() {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 w-auto">
-          <UIAvatar className="size-8">
-            <AvatarImage src="" />
+          <UIAvatar className="size-8 border">
+            <AvatarImage src={user?.profilePicture} />
             <AvatarFallback>
-              <Avatar name="Lawrence Dullo" variant="beam" />
+              <Avatar
+                name={`${user?.name} ${user?.id}`}
+                variant="beam"
+                className="size-8"
+              />
             </AvatarFallback>
           </UIAvatar>
           <div className="flex flex-col">
-            <span className="font-medium text-sm">Lawrence Dullo</span>
-            <span className="text-xs text-gray-600">
-              lawrencedullo04@gmail.com
-            </span>
+            <span className="font-medium text-sm">{user?.name}</span>
+            <span className="text-xs text-gray-600">{user?.email}</span>
           </div>
         </div>
 

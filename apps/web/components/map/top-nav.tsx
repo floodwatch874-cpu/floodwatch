@@ -10,12 +10,12 @@ import {
 import Avatar from 'boring-avatars';
 import { IconBell } from '@tabler/icons-react';
 import { usePanel } from '@/contexts/panel-context';
-import { useAuth } from '@/contexts/auth-context';
 import AuthButtons from '@/components/auth-buttons';
+import { useUser } from '@/hooks/use-user';
 
 export default function TopNav() {
   const { toggle } = usePanel();
-  const { isAuthenticated } = useAuth();
+  const { user } = useUser();
 
   return (
     <header className="flex w-full bg-[#0066CC] h-16 relative z-50">
@@ -25,7 +25,7 @@ export default function TopNav() {
           <h1 className="text-white font-bold text-xl">FloodWatch</h1>
         </Link>
 
-        {isAuthenticated ? (
+        {user ? (
           <div className="flex items-center gap-10">
             <div className="flex items-center gap-4">
               {/* Notification button maybe dropdown */}
@@ -38,9 +38,13 @@ export default function TopNav() {
 
               <button onClick={() => toggle('profile')}>
                 <UIAvatar className="size-8 border">
-                  <AvatarImage src="" />
+                  <AvatarImage src={user?.profilePicture} />
                   <AvatarFallback>
-                    <Avatar name="Lawrence Dullo" variant="beam" />
+                    <Avatar
+                      name={`${user?.name} ${user?.id}`}
+                      variant="beam"
+                      className="size-8"
+                    />
                   </AvatarFallback>
                 </UIAvatar>
               </button>

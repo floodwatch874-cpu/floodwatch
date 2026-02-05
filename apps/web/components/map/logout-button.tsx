@@ -1,27 +1,21 @@
 'use client';
 
+import { logout } from '@/lib/services/auth/logout';
 import { IconLogout } from '@tabler/icons-react';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { clearAuth } from '@/utils/auth-utils';
-import { useAuth } from '@/contexts/auth-context';
+import { useState } from 'react';
 
 export default function LogoutButton() {
-  const router = useRouter();
-  const { logout } = useAuth();
-
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   async function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     setIsPending(true);
 
     try {
-      // Perform logout logic here, e.g., call an API endpoint to log out
       await logout();
-
-      clearAuth();
-      router.replace('/auth/login');
+      router.push('/auth/login');
       router.refresh();
     } catch (err) {
       console.error('Logout failed', err);

@@ -8,12 +8,20 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import {
+  Avatar as UIAvatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar';
+import Avatar from 'boring-avatars';
 import { NavItems } from './nav-items';
 import LogoutButton from './logout-button';
 import { ScrollArea } from '../ui/scroll-area';
+import { getMeServer } from '@/lib/server/get-me';
 
-export default function SideNav() {
+export default async function SideNav() {
+  const user = await getMeServer();
+
   return (
     <div className="p-4 h-screen">
       <Sidebar collapsible="none" className="flex rounded-2xl bg-white">
@@ -34,18 +42,23 @@ export default function SideNav() {
           <SidebarGroup>
             <SidebarGroupContent className="flex flex-col items-center justify-center py-4">
               <div className="py-2">
-                <Avatar className="size-24">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <UIAvatar className="size-24 border">
+                  <AvatarImage src={user?.profilePicture} />
+                  <AvatarFallback>
+                    <Avatar
+                      name={`${user?.name} ${user?.id}`}
+                      variant="beam"
+                      className="size-24"
+                    />
+                  </AvatarFallback>
+                </UIAvatar>
               </div>
 
               <div className="flex flex-col text-center">
-                <span className="text-lg font-bold">John Doe</span>
-                <span className="text-muted-foreground">CDRRMO</span>
+                <span className="text-lg font-bold">{user?.name}</span>
+                <span className="text-muted-foreground">
+                  {user?.role.toUpperCase()}
+                </span>
               </div>
             </SidebarGroupContent>
           </SidebarGroup>

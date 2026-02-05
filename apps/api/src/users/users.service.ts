@@ -55,6 +55,34 @@ export class UsersService {
     return user;
   }
 
+  async findByIdWithProfile(id: number) {
+    const [user] = await this.db
+      .select()
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(eq(users.id, id))
+      .limit(1);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      id: user.users.id,
+      email: user.users.email,
+      role: user.users.role,
+      status: user.users.status,
+      firstName: user.profile_info?.firstName,
+      lastName: user.profile_info?.lastName,
+      name: `${user.profile_info?.firstName || ''} ${
+        user.profile_info?.lastName || ''
+      }`.trim(),
+      profilePicture: user.profile_info?.profilePicture,
+      homeAddress: user.profile_info?.homeAddress,
+      createdAt: user.users.createdAt,
+    };
+  }
+
   async updateUserStatus(id: number, status: 'active' | 'blocked') {
     const [user] = await this.db
       .update(users)

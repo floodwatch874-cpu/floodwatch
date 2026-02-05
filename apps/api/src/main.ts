@@ -13,7 +13,7 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3000;
 
   app.useLogger(app.get(Logger));
-  // app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.use(helmet());
   app.use(cookieParser());
 

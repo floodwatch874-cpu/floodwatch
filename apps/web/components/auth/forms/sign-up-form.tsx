@@ -5,17 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ActionState } from '@/lib/types/action-state';
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/auth-context';
 import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
-import { mapSignupAuthError } from '@/lib/auth/signup-auth-error';
+import { mapSignupAuthError } from '@/lib/services/auth/signup-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
 export default function SignUpForm() {
   const router = useRouter();
-  const { refreshAuth } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -76,8 +74,6 @@ export default function SignUpForm() {
         status: 'success',
         errors: {},
       });
-
-      await refreshAuth();
 
       form.reset();
       router.refresh();

@@ -1,11 +1,14 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useUser } from '@/hooks/use-user';
 
 export default function ProfileInformationForm({
   isEditing,
 }: {
   isEditing: boolean;
 }) {
+  const { user } = useUser();
+
   return (
     <div className="flex flex-col gap-6">
       {/* first name */}
@@ -15,7 +18,7 @@ export default function ProfileInformationForm({
           id="firstName"
           name="firstName"
           type="text"
-          defaultValue="Lawrence"
+          defaultValue={user?.firstName}
           placeholder="Enter your first name"
           className="rounded-full px-4 shadow-sm"
           disabled={!isEditing}
@@ -29,7 +32,7 @@ export default function ProfileInformationForm({
           id="lastName"
           name="lastName"
           type="text"
-          defaultValue="Dullo"
+          defaultValue={user?.lastName}
           placeholder="Enter your last name"
           className="rounded-full px-4 shadow-sm"
           disabled={!isEditing}
@@ -42,7 +45,7 @@ export default function ProfileInformationForm({
           id="email"
           name="email"
           type="email"
-          defaultValue="lawrencedullo04@gmail.com"
+          defaultValue={user?.email}
           placeholder="Enter your email"
           className="rounded-full px-4 shadow-sm"
           disabled
@@ -55,7 +58,7 @@ export default function ProfileInformationForm({
           id="homeAddress"
           name="homeAddress"
           type="text"
-          defaultValue="Caloocan City, Metro Manila"
+          defaultValue={user?.homeAddress}
           placeholder="Enter your home address"
           className="rounded-full px-4 shadow-sm"
           disabled={!isEditing}

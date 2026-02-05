@@ -37,7 +37,7 @@ export const columns: ColumnDef<UsersDto>[] = [
           <UIAvatar className="size-8">
             <AvatarImage src={user.profilePicture} />
             <AvatarFallback>
-              <Avatar name={user.name + ' ' + user.id} variant="beam" />
+              <Avatar name={`${user.name} ${user.id}`} variant="beam" />
             </AvatarFallback>
           </UIAvatar>
           <div className="flex flex-col">

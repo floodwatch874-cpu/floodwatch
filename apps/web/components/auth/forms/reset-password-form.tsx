@@ -10,7 +10,7 @@ import { resetPasswordSchema } from '@repo/schemas';
 import z from 'zod';
 import { api } from '@/lib/api';
 import { Spinner } from '@/components/ui/spinner';
-import { mapResetPasswordAuthError } from '@/lib/auth/reset-password-auth-error';
+import { mapResetPasswordAuthError } from '@/lib/services/auth/reset-password-auth-error';
 
 export default function ResetPasswordForm() {
   const router = useRouter();

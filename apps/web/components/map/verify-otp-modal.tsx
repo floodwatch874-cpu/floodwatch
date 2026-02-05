@@ -10,7 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { verifyOtpSchema } from '@repo/schemas';
 import z from 'zod';
 import { api } from '@/lib/api';
-import { mapVerifyOtpAuthError } from '@/lib/auth/verify-otp-auth-error';
+import { mapVerifyOtpAuthError } from '@/lib/services/auth/verify-otp-auth-error';
 
 import {
   Dialog,
