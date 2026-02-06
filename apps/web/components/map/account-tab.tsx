@@ -1,6 +1,6 @@
 'use client';
 
-import ProfileInformationForm from './forms/profile-information-form';
+import ProfileInformationForm from '../forms/profile-information-form';
 import {
   Avatar as UIAvatar,
   AvatarFallback,

@@ -11,6 +11,8 @@ import { mapSignupAuthError } from '@/lib/services/auth/signup-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { mutate } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -61,7 +63,7 @@ export default function SignUpForm() {
     } = parsed.data;
 
     try {
-      await api.post('/auth/signup', {
+      const res = await api.post('/auth/signup', {
         first_name,
         last_name,
         home_address,
@@ -70,12 +72,18 @@ export default function SignUpForm() {
         confirm_password,
       });
 
+      const { user } = res.data;
+
       setState({
         status: 'success',
         errors: {},
       });
 
       form.reset();
+      await mutate(SWR_KEYS.me);
+
+      if (user?.role === 'admin') router.push('/admin');
+      else router.push('/map');
       router.refresh();
     } catch (err) {
       setState({

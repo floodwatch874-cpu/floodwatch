@@ -30,7 +30,6 @@ export async function seedProfileInfo() {
     }));
 
     await db.insert(schema.profileInfo).values(data);
-
     console.log('✅ Profiles seeded');
   } catch (err) {
     console.log('❌ Failed to seed profiles:', err);

@@ -6,15 +6,25 @@ import * as schema from '../schemas/schema';
 export async function seedUsers(length: number) {
   try {
     console.log('🌱 Seeding users...');
-
     const hash = await bcrypt.hash('password123', 10);
 
-    const data = Array.from({ length: length }).map(() => ({
-      email: faker.internet.email().toLowerCase(),
-      hashedPassword: hash,
-    }));
+    for (let i = 0; i < length; i++) {
+      const email = faker.internet.email().toLowerCase();
 
-    await db.insert(schema.users).values(data);
+      // Insert user
+      const [user] = await db
+        .insert(schema.users)
+        .values({ email })
+        .returning();
+
+      // Insert auth account for the user
+      await db.insert(schema.authAccounts).values({
+        userId: user.id,
+        provider: 'local',
+        providerId: email, // Using email as providerId for local accounts
+        hashedPassword: hash,
+      });
+    }
 
     console.log('✅ Users seeded');
   } catch (err) {

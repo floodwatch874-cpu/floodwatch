@@ -3,163 +3,99 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  startTransition,
+} from 'react';
 import { ActionState } from '@/lib/types/action-state';
 import { Spinner } from '@/components/ui/spinner';
-import { verifyOtpSchema } from '@repo/schemas';
-import z from 'zod';
-import { api } from '@/lib/api';
-import { mapVerifyOtpAuthError } from '@/lib/services/auth/verify-otp-auth-error';
-
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { IconMail } from '@tabler/icons-react';
+import { handleVerify, handleResend } from '@/lib/actions/otp-actions-secure';
 
-export default function VerifyOtpModal() {
-  const router = useRouter();
+export default function VerifyOtpModal({
+  isOpen,
+  onClose,
+  onVerified,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onVerified: () => void;
+}) {
   const formRef = useRef<HTMLFormElement>(null);
-
   const [otp, setOtp] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
-
-  const [isResending, setIsResending] = useState(false);
-  const RESEND_COOLDOWN = 30;
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN);
-
-  const [state, setState] = useState<ActionState>({
+  const initialState: ActionState = {
     status: null,
     errors: null,
-  });
+  };
+
+  const [verifyState, verifyFormAction, isVerifying] = useActionState(
+    handleVerify,
+    initialState,
+  );
+
+  const [, resendFormAction, isResending] = useActionState(
+    handleResend,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (verifyState.status === 'success') {
+      onClose();
+      onVerified();
+    }
+  }, [verifyState, onVerified, onClose]);
+
+  // Cooldown state for resend button
+  const RESEND_COOLDOWN = 30;
+  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN);
 
   useEffect(() => {
     if (cooldown <= 0) return;
 
-    const interval = setInterval(() => {
-      setCooldown((prev) => prev - 1);
-    }, 1000);
-
+    const interval = setInterval(
+      () => setCooldown((c) => Math.max(c - 1, 0)),
+      1000,
+    );
     return () => clearInterval(interval);
   }, [cooldown]);
 
-  useEffect(() => {
-    const stored = sessionStorage.getItem('otp_cooldown');
-    if (stored) setCooldown(Number(stored));
-  }, []);
+  async function handleResendClick() {
+    if (isResending || cooldown > 0) return;
 
-  useEffect(() => {
-    sessionStorage.setItem('otp_cooldown', String(cooldown));
-  }, [cooldown]);
-
-  async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (isVerifying || isResending) return;
-
-    setIsVerifying(true);
-
-    const resetEmail = sessionStorage.getItem('reset_email');
-    if (!resetEmail) {
-      setIsVerifying(false);
-      router.replace('/auth/forgot-password');
-      return;
-    }
-
-    const parsed = verifyOtpSchema.safeParse({
-      email: resetEmail,
-      otp,
-    });
-
-    if (!parsed.success) {
-      setState({
-        errors: z.flattenError(parsed.error).fieldErrors,
-        status: 'error',
-      });
-      setOtp('');
-      setIsVerifying(false);
-      return;
-    }
-
-    try {
-      const response = await api.post('/auth/verify-otp', {
-        email: resetEmail,
-        otp,
-      });
-
-      const { resetSessionId } = response.data;
-      sessionStorage.setItem('resetSessionId', resetSessionId);
-
-      setState({
-        errors: {},
-        status: 'success',
-      });
-
-      router.push('/auth/reset-password');
-    } catch (err) {
-      setState({
-        errors: mapVerifyOtpAuthError(err).errors,
-        status: 'error',
-      });
-      setOtp('');
-    } finally {
-      setIsVerifying(false);
-    }
-  }
-
-  async function handleResend() {
-    if (isVerifying || isResending || cooldown > 0) return;
-
-    setIsResending(true);
-
-    const resetEmail = sessionStorage.getItem('reset_email');
-    if (!resetEmail) {
-      setIsResending(false);
-      router.replace('/auth/forgot-password');
-      return;
-    }
-
-    try {
-      await api.post('/auth/resend-otp', { email: resetEmail });
-
-      setState({
-        errors: {},
-        status: 'success',
-      });
-
-      setOtp('');
-    } catch {
-      // swallowed
-    } finally {
-      setOtp('');
-      setIsResending(false);
+    // Wrap the action call in startTransition
+    startTransition(() => {
+      resendFormAction(new FormData(formRef.current!));
       setCooldown(RESEND_COOLDOWN);
-    }
+    });
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <IconMail className="w-[1.5em]! h-[1.5em]!" />
-          Send OTP to Email
-        </Button>
-      </DialogTrigger>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Verify code!</DialogTitle>
+          <DialogTitle>
+            Verify <span className="text-[#0066CC] font-bold">code!</span>
+          </DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            We have sent the 6-digit code to your email address
           </DialogDescription>
         </DialogHeader>
-        <form ref={formRef} onSubmit={handleVerify} className="space-y-6">
+        <form action={verifyFormAction} ref={formRef} className="space-y-6">
           <div className="flex flex-col items-center gap-y-4">
             <InputOTP
               maxLength={6}
@@ -185,9 +121,11 @@ export default function VerifyOtpModal() {
               </InputOTPGroup>
             </InputOTP>
 
-            {state?.errors && 'otp' in state.errors && state.errors.otp && (
-              <p className="text-red-500 text-sm">{state.errors.otp}</p>
-            )}
+            {verifyState?.errors &&
+              'otp' in verifyState.errors &&
+              verifyState.errors.otp && (
+                <p className="text-red-500 text-sm">{verifyState.errors.otp}</p>
+              )}
           </div>
 
           <div className="flex flex-col gap-y-4">
@@ -206,7 +144,7 @@ export default function VerifyOtpModal() {
 
             <Button
               type="button"
-              onClick={handleResend}
+              onClick={handleResendClick}
               disabled={isVerifying || isResending || cooldown > 0}
               variant="secondary"
               className="w-full rounded-full"

@@ -11,7 +11,7 @@ export default function ProfilePanel() {
         className="flex-1 flex flex-col h-full min-h-0"
       >
         <div className="w-full border-b">
-          <TabsList variant="line" className="font-poppins">
+          <TabsList variant="line" className="font-poppins w-full">
             <TabsTrigger
               value="account"
               className="data-[state=active]:text-[#0066CC] 

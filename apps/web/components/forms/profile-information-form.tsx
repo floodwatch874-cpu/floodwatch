@@ -10,10 +10,10 @@ export default function ProfileInformationForm({
   const { user } = useUser();
 
   return (
-    <div className="flex flex-col gap-6">
+    <form className="flex flex-col gap-6 text-sm">
       {/* first name */}
       <div className="space-y-2">
-        <Label htmlFor="firstName">First name</Label>
+        <Label htmlFor="firstName">First Name</Label>
         <Input
           id="firstName"
           name="firstName"
@@ -27,7 +27,7 @@ export default function ProfileInformationForm({
 
       {/* last name */}
       <div className="space-y-2">
-        <Label htmlFor="lastName">Last name</Label>
+        <Label htmlFor="lastName">Last Name</Label>
         <Input
           id="lastName"
           name="lastName"
@@ -53,7 +53,7 @@ export default function ProfileInformationForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="homeAddress">Home address</Label>
+        <Label htmlFor="homeAddress">Home Address</Label>
         <Input
           id="homeAddress"
           name="homeAddress"
@@ -64,6 +64,6 @@ export default function ProfileInformationForm({
           disabled={!isEditing}
         />
       </div>
-    </div>
+    </form>
   );
 }

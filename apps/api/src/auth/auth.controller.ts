@@ -9,21 +9,14 @@ import {
   Request,
   Res,
   Delete,
-  Get,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import {
-  type ForgotPasswordDto,
-  forgotPasswordSchema,
   logInSchema,
+  type SetPasswordDto,
+  setPasswordSchema,
   type SignUpDto,
   signUpSchema,
-  verifyOtpSchema,
-  type VerifyOtpDto,
-  resetPasswordSchema,
-  type ResetPasswordDto,
-  resendOtpSchema,
-  type ResendOtpDto,
 } from '@repo/schemas';
 import { type AuthRequest } from './types/auth-request.type';
 import { AuthService } from './auth.service';
@@ -33,12 +26,8 @@ import { type Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { setAuthCookies } from 'src/auth/utils/auth-util';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
-import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
-import { Public } from './decorators/public.decorator';
 import { type RefreshTokenRequest } from './types/refresh-token-request.type';
 import { type LogoutRequest } from './types/logout-request.type';
-import { type GoogleRequest } from './types/google-request.type';
-import { getRedirectByRole } from './utils/role-redirect';
 
 @Controller('auth')
 export class AuthController {
@@ -62,12 +51,7 @@ export class AuthController {
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
-    res.redirect(
-      getRedirectByRole(
-        this.configService.getOrThrow('FRONTEND_URL'),
-        req.user.role,
-      ),
-    );
+    return { user: req.user };
   }
 
   @HttpCode(HttpStatus.OK)
@@ -95,7 +79,7 @@ export class AuthController {
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, device_id, isProduction);
 
-    return { deviceId: device_id };
+    return { success: true };
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -116,12 +100,7 @@ export class AuthController {
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
-    res.redirect(
-      getRedirectByRole(
-        this.configService.getOrThrow('FRONTEND_URL'),
-        user.role,
-      ),
-    );
+    return { user };
   }
 
   @HttpCode(HttpStatus.OK)
@@ -143,60 +122,13 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('forgot-password')
-  @UsePipes(new ZodValidationPipe(forgotPasswordSchema))
-  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    await this.authService.forgotPassword(forgotPasswordDto);
-    return { message: 'OTP sent to your email if it exists' };
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Post('verify-otp')
-  @UsePipes(new ZodValidationPipe(verifyOtpSchema))
-  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
-    const { resetSessionId } = await this.authService.verifyOtp(verifyOtpDto);
-
-    return { resetSessionId };
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Post('reset-password')
-  @UsePipes(new ZodValidationPipe(resetPasswordSchema))
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    await this.authService.resetPassword(resetPasswordDto);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Post('resend-otp')
-  @UsePipes(new ZodValidationPipe(resendOtpSchema))
-  async resendOtp(@Body() resendOtpDto: ResendOtpDto) {
-    await this.authService.resendOtp(resendOtpDto);
-  }
-
-  @Public()
-  @UseGuards(GoogleAuthGuard)
-  @Get('google')
-  googleLogin() {}
-
-  @Public()
-  @UseGuards(GoogleAuthGuard)
-  @Get('google/callback')
-  async googleCallback(
-    @Request() req: GoogleRequest,
-    @Res({ passthrough: true }) res: Response,
+  @UseGuards(JwtAuthGuard)
+  @Post('set-password')
+  @UsePipes(new ZodValidationPipe(setPasswordSchema))
+  async setPassword(
+    @Body() setPasswordDto: SetPasswordDto,
+    @Request() req: AuthRequest,
   ) {
-    const { access_token, refresh_token, deviceId, user } =
-      await this.authService.handleGoogleLogin(req.user);
-
-    const isProduction =
-      this.configService.getOrThrow('NODE_ENV') === 'production';
-    setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
-
-    res.redirect(
-      getRedirectByRole(
-        this.configService.getOrThrow('FRONTEND_URL'),
-        user.role,
-      ),
-    );
+    await this.authService.setPassword(req.user.id, setPasswordDto);
   }
 }

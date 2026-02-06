@@ -13,6 +13,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { api } from '@/lib/api';
 import { mutate } from 'swr';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [isPending, setIsPending] = useState(false);
@@ -20,6 +21,7 @@ export default function LoginForm() {
     status: null,
     errors: null,
   });
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,7 +50,8 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email, password });
+      const { user } = res.data;
 
       setState({
         errors: {},
@@ -57,6 +60,9 @@ export default function LoginForm() {
 
       form.reset();
       await mutate(SWR_KEYS.me);
+
+      if (user?.role === 'admin') router.push('/admin');
+      else router.push('/map');
     } catch (err) {
       setState({
         errors: mapLoginAuthError(err).errors,

@@ -1,0 +1,92 @@
+import {
+  ConflictException,
+  Controller,
+  Get,
+  NotFoundException,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { setAuthCookies } from '../utils/auth-util';
+import { Public } from '../decorators/public.decorator';
+import { GoogleAuthGuard } from '../guards/google-auth/google-auth.guard';
+import { type GoogleRequest } from '../types/google-request.type';
+import { ConfigService } from '@nestjs/config';
+import { GoogleService } from './google.service';
+import { type Response } from 'express';
+import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
+import { GoogleLinkAuthGuard } from '../guards/google-link-auth/google-link-auth.guard';
+import { type GoogleLinkRequest } from '../types/google-link-request.type';
+
+@Controller('auth/google')
+export class GoogleController {
+  constructor(
+    private googleService: GoogleService,
+    private configService: ConfigService,
+  ) {}
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('')
+  googleLogin() {}
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('callback')
+  async googleCallback(
+    @Request() req: GoogleRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { access_token, refresh_token, deviceId, user } =
+      await this.googleService.handleGoogleLogin(req.user);
+
+    const isProduction =
+      this.configService.getOrThrow('NODE_ENV') === 'production';
+    setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
+
+    const frontendURL = this.configService.getOrThrow<string>('FRONTEND_URL');
+
+    if (user.role === 'admin') res.redirect(`${frontendURL}/admin`);
+    else res.redirect(`${frontendURL}/map`);
+  }
+
+  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
+  @Get('link')
+  async linkGoogleAccount() {}
+
+  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
+  @Get('link/callback')
+  async linkGoogleAccountCallback(
+    @Request() req: GoogleLinkRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      await this.googleService.linkGoogleAccount(req.user, req.google);
+
+      const frontendURL = this.configService.getOrThrow<string>('FRONTEND_URL');
+      if (req.user.role === 'admin')
+        res.redirect(`${frontendURL}/admin/settings?linked=success`);
+      else res.redirect(`${frontendURL}/map?linked=success`);
+    } catch (error) {
+      const frontendURL = this.configService.getOrThrow<string>('FRONTEND_URL');
+
+      let errorMessage = 'unknown_error';
+      if (error instanceof ConflictException) {
+        if (error.message.includes('email must match')) {
+          errorMessage = 'email_mismatch';
+        } else if (error.message.includes('already linked')) {
+          errorMessage = 'already_linked';
+        }
+      } else if (error instanceof NotFoundException) {
+        errorMessage = 'user_not_found';
+      }
+
+      if (req.user.role === 'admin')
+        res.redirect(
+          `${frontendURL}/admin/settings?linked=error&reason=${errorMessage}`,
+        );
+      else
+        res.redirect(`${frontendURL}/map?linked=error&reason=${errorMessage}`);
+    }
+  }
+}

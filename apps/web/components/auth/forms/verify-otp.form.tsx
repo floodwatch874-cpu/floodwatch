@@ -80,7 +80,7 @@ export default function VerifyOtpForm() {
     }
 
     try {
-      const response = await api.post('/auth/verify-otp', {
+      const response = await api.post('/auth/forgot-password/verify-otp', {
         email: resetEmail,
         otp,
       });
@@ -118,7 +118,7 @@ export default function VerifyOtpForm() {
     }
 
     try {
-      await api.post('/auth/resend-otp', { email: resetEmail });
+      await api.post('/auth/forgot-password/resend-otp', { email: resetEmail });
 
       setState({
         errors: {},

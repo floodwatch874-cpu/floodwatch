@@ -4,6 +4,7 @@ import './globals.css';
 import SWRProvider from '@/providers/swr-provider';
 import { getMeServer } from '@/lib/server/get-me';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'FloodWatch',
@@ -23,6 +24,7 @@ export default async function RootLayout({
         className={`${inter.className} ${poppins.variable} bg-[#EAEAEA] antialiased min-h-screen`}
       >
         <SWRProvider fallback={{ [SWR_KEYS.me]: user }}>{children}</SWRProvider>
+        <Toaster richColors theme="light" position="top-center" />
       </body>
     </html>
   );

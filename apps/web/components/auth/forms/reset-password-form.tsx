@@ -59,7 +59,7 @@ export default function ResetPasswordForm() {
     const { new_password, confirm_new_password } = parsed.data;
 
     try {
-      await api.post('/auth/reset-password', {
+      await api.post('/auth/forgot-password/reset-password', {
         resetSessionId,
         new_password,
         confirm_new_password,

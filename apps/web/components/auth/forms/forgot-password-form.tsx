@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
-import { forgotPasswordSchema } from '@repo/schemas';
+import { sendOtpSchema } from '@repo/schemas';
 import z from 'zod';
 import { api } from '@/lib/api';
 import { Spinner } from '@/components/ui/spinner';
@@ -27,7 +27,7 @@ export default function ForgotPasswordForm() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const parsed = forgotPasswordSchema.safeParse({
+    const parsed = sendOtpSchema.safeParse({
       email: formData.get('email'),
     });
 
@@ -47,7 +47,7 @@ export default function ForgotPasswordForm() {
     sessionStorage.setItem('reset_email', email);
 
     try {
-      await api.post('/auth/forgot-password', { email });
+      await api.post('/auth/forgot-password/send-otp', { email });
 
       setState({
         errors: {},

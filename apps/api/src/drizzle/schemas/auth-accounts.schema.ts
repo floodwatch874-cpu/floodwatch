@@ -22,6 +22,7 @@ export const authAccounts = pgTable(
     providerId: varchar('provider_id', { length: 255 }),
     hashedPassword: varchar('hashed_password', { length: 255 }),
     createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
   },
   (table) => ({
     uniqueProviderProviderId: unique().on(table.provider, table.providerId),

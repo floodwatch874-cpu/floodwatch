@@ -67,6 +67,16 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    const accounts = await this.db
+      .select()
+      .from(authAccounts)
+      .where(eq(authAccounts.userId, id));
+
+    const providers = accounts.map((acc) => acc.provider);
+    const hasPassword = accounts.some(
+      (acc) => acc.provider === 'local' && acc.hashedPassword,
+    );
+
     return {
       id: user.users.id,
       email: user.users.email,
@@ -77,6 +87,9 @@ export class UsersService {
       name: `${user.profile_info?.firstName || ''} ${
         user.profile_info?.lastName || ''
       }`.trim(),
+      providers,
+      hasPassword,
+      hasGoogleAuth: providers.includes('google'),
       profilePicture: user.profile_info?.profilePicture,
       homeAddress: user.profile_info?.homeAddress,
       createdAt: user.users.createdAt,
@@ -125,7 +138,7 @@ export class UsersService {
       )
       .limit(1);
 
-    return authAccount || null;
+    return authAccount;
   }
 
   async findAuthAccountByProviderId(
@@ -161,7 +174,7 @@ export class UsersService {
 
     const [updatedAccount] = await this.db
       .update(authAccounts)
-      .set({ hashedPassword })
+      .set({ hashedPassword, updatedAt: new Date() })
       .where(
         and(
           eq(authAccounts.userId, userId),
