@@ -16,6 +16,7 @@ export const profileInfo = pgTable('profile_info', {
   firstName: varchar('first_name', { length: 50 }).notNull(),
   lastName: varchar('last_name', { length: 50 }).notNull(),
   profilePicture: text('profile_picture'),
+  profilePicturePublicId: text('profile_picture_public_id'),
   homeAddress: text('home_address'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

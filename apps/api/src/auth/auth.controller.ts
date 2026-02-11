@@ -36,10 +36,10 @@ export class AuthController {
     private configService: ConfigService,
   ) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
-  @UsePipes(new ZodValidationPipe(logInSchema))
+  @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
+  @UsePipes(new ZodValidationPipe(logInSchema))
   async login(
     @Request() req: AuthRequest,
     @Res({ passthrough: true }) res: Response,
@@ -54,9 +54,9 @@ export class AuthController {
     return { user: req.user };
   }
 
+  @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtRefreshAuthGuard)
-  @Post('refresh')
   async refreshToken(
     @Request() req: RefreshTokenRequest,
     @Res({ passthrough: true }) res: Response,
@@ -82,8 +82,8 @@ export class AuthController {
     return { success: true };
   }
 
-  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
   @UsePipes(new ZodValidationPipe(signUpSchema))
   async signup(
     @Body() signUpDto: SignUpDto,
@@ -103,9 +103,9 @@ export class AuthController {
     return { user };
   }
 
+  @Delete('logout')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  @Delete('logout')
   async logout(
     @Request() req: LogoutRequest,
     @Res({ passthrough: true }) res: Response,
@@ -121,9 +121,9 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
+  @Post('set-password')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  @Post('set-password')
   @UsePipes(new ZodValidationPipe(setPasswordSchema))
   async setPassword(
     @Body() setPasswordDto: SetPasswordDto,

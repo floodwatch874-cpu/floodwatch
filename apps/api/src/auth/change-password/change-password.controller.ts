@@ -24,14 +24,14 @@ import { type AuthRequest } from '../types/auth-request.type';
 export class ChangePasswordController {
   constructor(private changePasswordService: ChangePasswordService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('send-otp')
+  @HttpCode(HttpStatus.OK)
   async sendOtp(@Request() req: AuthRequest) {
     await this.changePasswordService.sendOtp(req.user.email);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('verify-otp')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(verifyOtpSecureSchema))
   async verifyOtp(
     @Request() req: AuthRequest,
@@ -45,15 +45,15 @@ export class ChangePasswordController {
     return { resetSessionId };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(changePasswordSchema))
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     await this.changePasswordService.changePassword(changePasswordDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('resend-otp')
+  @HttpCode(HttpStatus.OK)
   async resendOtp(@Request() req: AuthRequest) {
     await this.changePasswordService.resendOtp(req.user.email);
   }

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { db } from './utils/db';
-import * as schema from '../schemas/schema';
+import * as schema from '../schemas';
 import { eq, isNull } from 'drizzle-orm';
 
 export async function seedProfileInfo() {

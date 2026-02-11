@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { DrizzleModule } from 'src/drizzle/drizzle.module';
 import { UsersController } from './users.controller';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { ImagesModule } from 'src/images/images.module';
 
 @Module({
-  imports: [DrizzleModule],
+  imports: [DrizzleModule, CloudinaryModule, ImagesModule],
   providers: [UsersService],
   exports: [UsersService],
   controllers: [UsersController],

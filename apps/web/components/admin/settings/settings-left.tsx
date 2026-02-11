@@ -7,8 +7,14 @@ import Avatar from 'boring-avatars';
 import { ProfilePhotoModal } from '@/components/admin/settings/profile-photo-modal';
 import { Separator } from '@/components/ui/separator';
 import { GetMeDto } from '@repo/schemas';
+import { format } from 'date-fns';
 
 export default function SettingsLeft({ user }: { user: GetMeDto }) {
+  let formatted;
+  if (user) {
+    formatted = format(new Date(user?.createdAt), 'MMMM d, yyyy');
+  }
+
   return (
     <div className="flex flex-col items-center border-r p-4 gap-8">
       <div className="relative">
@@ -28,8 +34,8 @@ export default function SettingsLeft({ user }: { user: GetMeDto }) {
       </div>
 
       <div className="flex flex-col text-center">
-        <span className="font-semibold text-2xl">John Doe</span>
-        <span className="text-gray-600">john.doe@example.com</span>
+        <span className="font-semibold text-2xl">{user?.name}</span>
+        <span className="text-gray-600">{user?.email}</span>
       </div>
 
       <Separator />
@@ -37,7 +43,7 @@ export default function SettingsLeft({ user }: { user: GetMeDto }) {
       <div className="flex flex-col text-center w-full max-w-md text-gray-600 gap-4">
         <div className="flex justify-between">
           <span>Member since</span>
-          <span className="font-semibold">January 1, 2022</span>
+          <span className="font-semibold">{formatted}</span>
         </div>
         <div className="flex justify-between">
           <span>Post</span>

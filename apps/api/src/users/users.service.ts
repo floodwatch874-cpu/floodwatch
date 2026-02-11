@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -10,11 +11,17 @@ import { users } from 'src/drizzle/schemas/users.schema';
 import { and, eq } from 'drizzle-orm';
 import { authAccounts } from 'src/drizzle/schemas/auth-accounts.schema';
 import * as bcrypt from 'bcrypt';
-import { profileInfo } from 'src/drizzle/schemas/schema';
+import { profileInfo } from 'src/drizzle/schemas';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
+  constructor(
+    @Inject(DRIZZLE) private db: DrizzleDB,
+    private cloudinaryService: CloudinaryService,
+    private imagesService: ImagesService,
+  ) {}
 
   async createUser(email: string, role: 'user' | 'admin' = 'user') {
     const existingUser = await this.findByEmail(email);
@@ -231,5 +238,94 @@ export class UsersService {
       .returning();
 
     return updatedProfile;
+  }
+
+  async uploadAvatar(id: number, file: Express.Multer.File) {
+    try {
+      const [profile] = await this.db
+        .select()
+        .from(profileInfo)
+        .where(eq(profileInfo.userId, id))
+        .limit(1);
+
+      if (!profile) {
+        throw new NotFoundException('User profile not found');
+      }
+
+      if (profile.profilePicturePublicId) {
+        await this.cloudinaryService.deleteImage(
+          profile.profilePicturePublicId,
+        );
+      }
+
+      await this.imagesService.detectMimeType(file.buffer);
+      const { buffer, mimetype } =
+        await this.imagesService.normalizeAvatarImage(file.buffer);
+
+      const normalizedFile: Express.Multer.File = {
+        ...file,
+        buffer,
+        mimetype,
+        originalname: file.originalname.replace(
+          /\.(jpe?g|png|jfif|webp)$/i,
+          '.webp',
+        ),
+      };
+
+      const result = await this.cloudinaryService.uploadImage(
+        normalizedFile,
+        'avatars',
+      );
+
+      await this.db
+        .update(profileInfo)
+        .set({
+          profilePicture: result.secure_url as string,
+          profilePicturePublicId: result.public_id as string,
+          updatedAt: new Date(),
+        })
+        .where(eq(profileInfo.userId, id));
+
+      return {
+        message: 'Avatar uploaded successfully',
+      };
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      throw new BadRequestException('Failed to upload avatar');
+    }
+  }
+
+  async deleteAvatar(id: number) {
+    try {
+      const [profile] = await this.db
+        .select()
+        .from(profileInfo)
+        .where(eq(profileInfo.userId, id))
+        .limit(1);
+
+      if (!profile) {
+        throw new NotFoundException('User profile not found');
+      }
+
+      if (profile.profilePicturePublicId) {
+        await this.cloudinaryService.deleteImage(
+          profile.profilePicturePublicId,
+        );
+      }
+
+      await this.db
+        .update(profileInfo)
+        .set({
+          profilePicture: null,
+          profilePicturePublicId: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(profileInfo.userId, id));
+
+      return { message: 'Avatar deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting avatar:', error);
+      throw new BadRequestException('Failed to delete avatar');
+    }
   }
 }

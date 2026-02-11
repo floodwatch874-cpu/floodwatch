@@ -3,10 +3,11 @@ import { DrizzleModule } from './drizzle/drizzle.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ProfilesModule } from './profiles/profiles.module';
 import { MailerModule } from './mailer/mailer.module';
 import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from 'nestjs-pino';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -29,9 +30,10 @@ import { LoggerModule } from 'nestjs-pino';
     DrizzleModule,
     UsersModule,
     AuthModule,
-    ProfilesModule,
     MailerModule,
     RedisModule,
+    CloudinaryModule,
+    ImagesModule,
   ],
 })
 export class AppModule {}

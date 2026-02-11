@@ -25,14 +25,14 @@ export class GoogleController {
     private configService: ConfigService,
   ) {}
 
+  @Get('')
   @Public()
   @UseGuards(GoogleAuthGuard)
-  @Get('')
   googleLogin() {}
 
+  @Get('callback')
   @Public()
   @UseGuards(GoogleAuthGuard)
-  @Get('callback')
   async googleCallback(
     @Request() req: GoogleRequest,
     @Res({ passthrough: true }) res: Response,
@@ -50,12 +50,12 @@ export class GoogleController {
     else res.redirect(`${frontendURL}/map`);
   }
 
-  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
   @Get('link')
+  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
   async linkGoogleAccount() {}
 
-  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
   @Get('link/callback')
+  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
   async linkGoogleAccountCallback(
     @Request() req: GoogleLinkRequest,
     @Res({ passthrough: true }) res: Response,

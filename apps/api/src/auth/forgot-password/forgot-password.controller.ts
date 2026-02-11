@@ -23,16 +23,16 @@ import { ForgotPasswordService } from './forgot-password.service';
 export class ForgotPasswordController {
   constructor(private forgotPasswordService: ForgotPasswordService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('send-otp')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(sendOtpSchema))
   async forgotPassword(@Body() sendOtpDto: SendOtpDto) {
     await this.forgotPasswordService.forgotPassword(sendOtpDto);
     return { message: 'OTP sent to your email if it exists' };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('verify-otp')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(verifyOtpSchema))
   async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
     const { resetSessionId } =
@@ -41,15 +41,15 @@ export class ForgotPasswordController {
     return { resetSessionId };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(resetPasswordSchema))
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     await this.forgotPasswordService.resetPassword(resetPasswordDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('resend-otp')
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new ZodValidationPipe(resendOtpSchema))
   async resendOtp(@Body() resendOtpDto: ResendOtpDto) {
     await this.forgotPasswordService.resendOtp(resendOtpDto);

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
 import { db } from './utils/db';
-import * as schema from '../schemas/schema';
+import * as schema from '../schemas';
 
 export async function seedUsers(length: number) {
   try {
