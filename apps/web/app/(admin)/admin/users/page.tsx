@@ -5,102 +5,18 @@ import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
 import UserStatCards from '@/components/admin/users/user-stat-cards';
 import { Suspense } from 'react';
 import UserStatCardsSkeleton from '@/components/admin/users/user-stat-cards-skeleton';
-import { UsersDto } from '@repo/schemas';
+import UserPagination from '@/components/admin/users/user-pagination';
+import { getUsersData } from '@/lib/actions/get-users-data';
+import { UserQuery } from '@/lib/types/user-query';
 
-export default async function UserManagementPage() {
-  // Dummy data for demonstration purposes
-  const data: UsersDto[] = [
-    {
-      id: 1,
-      name: 'Alice Johnson',
-      email: 'alice.johnson@example.com',
-      profilePicture: '',
-      role: 'admin',
-      joinDate: '2023-01-15T08:30:00Z',
-      status: 'active',
-    },
-    {
-      id: 2,
-      name: 'Bob Smith',
-      email: 'bob.smith@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-02-10T14:15:00Z',
-      status: 'active',
-    },
-    {
-      id: 3,
-      name: 'Catherine Lee',
-      email: 'catherine.lee@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-03-05T12:45:00Z',
-      status: 'blocked',
-    },
-    {
-      id: 4,
-      name: 'David Kim',
-      email: 'david.kim@example.com',
-      profilePicture: '',
-      role: 'admin',
-      joinDate: '2023-04-20T10:00:00Z',
-      status: 'active',
-    },
-    {
-      id: 5,
-      name: 'Eva Martinez',
-      email: 'eva.martinez@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-05-11T09:20:00Z',
-      status: 'active',
-    },
-    {
-      id: 6,
-      name: 'Franklin Davis',
-      email: 'franklin.davis@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-06-22T11:50:00Z',
-      status: 'blocked',
-    },
-    {
-      id: 7,
-      name: 'Grace Chen',
-      email: 'grace.chen@example.com',
-      profilePicture: '',
-      role: 'admin',
-      joinDate: '2023-07-15T08:10:00Z',
-      status: 'active',
-    },
-    {
-      id: 8,
-      name: 'Henry Wilson',
-      email: 'henry.wilson@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-08-01T13:35:00Z',
-      status: 'active',
-    },
-    {
-      id: 9,
-      name: 'Isabella Brown',
-      email: 'isabella.brown@example.com',
-      profilePicture: '',
-      role: 'user',
-      joinDate: '2023-09-18T15:40:00Z',
-      status: 'blocked',
-    },
-    {
-      id: 10,
-      name: 'Jack Thompson',
-      email: 'jack.thompson@example.com',
-      profilePicture: '',
-      role: 'admin',
-      joinDate: '2023-10-05T09:55:00Z',
-      status: 'active',
-    },
-  ];
+export default async function UserManagementPage({
+  searchParams,
+}: {
+  searchParams: UserQuery;
+}) {
+  const params = await searchParams;
+
+  const data = await getUsersData(params);
 
   return (
     <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
@@ -116,11 +32,33 @@ export default async function UserManagementPage() {
         </div>
       </div>
 
-      <Suspense fallback={<UserStatCardsSkeleton />}>
-        <UserStatCards totalCount={100} activeCount={80} blockedCount={20} />
-      </Suspense>
+      <div className="flex-1 flex flex-col min-h-0 gap-4">
+        <Suspense fallback={<UserStatCardsSkeleton />}>
+          <UserStatCards
+            totalCount={data.stats.totalCount}
+            activeCount={data.stats.activeCount}
+            blockedCount={data.stats.blockedCount}
+          />
+        </Suspense>
 
-      <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data.data} />
+
+        <div className="flex items-center justify-between">
+          {/* Pagination controls would go here */}
+          <span className="text-sm text-gray-600">
+            Showing {data.data.length} of {data.stats.totalCount} users
+          </span>
+
+          <div>
+            <UserPagination
+              currentPage={data.meta.page}
+              totalPages={data.meta.totalPages}
+              hasNextPage={data.meta.hasNextPage}
+              hasPrevPage={data.meta.hasPrevPage}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

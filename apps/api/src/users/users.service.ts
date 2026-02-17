@@ -8,13 +8,13 @@ import {
 import { DRIZZLE } from '../drizzle/drizzle-connection';
 import { type DrizzleDB } from '../drizzle/types/drizzle';
 import { users } from 'src/drizzle/schemas/users.schema';
-import { and, eq } from 'drizzle-orm';
+import { and, count, desc, eq, like, or, SQL, sql } from 'drizzle-orm';
 import { authAccounts } from 'src/drizzle/schemas/auth-accounts.schema';
 import * as bcrypt from 'bcrypt';
 import { profileInfo } from 'src/drizzle/schemas';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesService } from 'src/images/images.service';
-import { UpdateProfileDto, updateProfileSchema } from '@repo/schemas';
+import { UpdateProfileInput, UserQueryInput } from '@repo/schemas';
 
 @Injectable()
 export class UsersService {
@@ -223,14 +223,8 @@ export class UsersService {
     return profile;
   }
 
-  async updateProfile(userId: number, updates: UpdateProfileDto) {
-    const parsedData = updateProfileSchema.safeParse(updates);
-
-    if (!parsedData.success) {
-      throw new BadRequestException('Invalid profile data');
-    }
-
-    const { firstName, lastName, homeAddress } = parsedData.data;
+  async updateProfile(userId: number, updates: UpdateProfileInput) {
+    const { firstName, lastName, homeAddress } = updates;
 
     const updateData: Partial<typeof profileInfo.$inferInsert> = {
       updatedAt: new Date(),
@@ -340,5 +334,112 @@ export class UsersService {
       console.error('Error deleting avatar:', error);
       throw new BadRequestException('Failed to delete avatar');
     }
+  }
+
+  async findAll(userQueryDto: UserQueryInput) {
+    const { page, limit, status, q } = userQueryDto;
+
+    const pageNumber = Number(page) || 1;
+    const limitNumber = Number(limit) || 10;
+    const offset = (pageNumber - 1) * limitNumber;
+
+    const whereConditions: (SQL<unknown> | undefined)[] = [];
+
+    if (status) {
+      whereConditions.push(eq(users.status, status));
+    }
+
+    if (q) {
+      whereConditions.push(
+        or(
+          like(profileInfo.firstName, `%${q}%`),
+          like(profileInfo.lastName, `%${q}%`),
+          like(users.email, `%${q}%`),
+          sql`CONCAT(${profileInfo.firstName}, ' ', ${profileInfo.lastName}) ILIKE ${`%${q}%`}`,
+        ),
+      );
+    }
+
+    const whereClause =
+      whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+    const data = await this.db
+      .select()
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(whereClause)
+      .orderBy(desc(users.createdAt))
+      .limit(limitNumber)
+      .offset(offset);
+
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(whereClause);
+
+    const searchCondition = q
+      ? or(
+          like(profileInfo.firstName, `%${q}%`),
+          like(profileInfo.lastName, `%${q}%`),
+          like(users.email, `%${q}%`),
+          sql`${profileInfo.firstName} || ' ' || ${profileInfo.lastName} ILIKE ${`%${q}%`}`,
+        )
+      : undefined;
+
+    const [{ activeCount }] = await this.db
+      .select({ activeCount: count() })
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(
+        searchCondition
+          ? and(eq(users.status, 'active'), searchCondition)
+          : eq(users.status, 'active'),
+      );
+
+    const [{ blockedCount }] = await this.db
+      .select({ blockedCount: count() })
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(
+        searchCondition
+          ? and(eq(users.status, 'blocked'), searchCondition)
+          : eq(users.status, 'blocked'),
+      );
+
+    const [{ totalCount }] = await this.db
+      .select({ totalCount: count() })
+      .from(users)
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .where(searchCondition);
+
+    const formattedData = data.map((item) => ({
+      id: item.users.id,
+      name: item.profile_info
+        ? `${item.profile_info.firstName} ${item.profile_info.lastName}`.trim()
+        : '',
+      email: item.users.email,
+      profilePicture: item.profile_info?.profilePicture || '',
+      role: item.users.role,
+      joinDate: item.users.createdAt,
+      status: item.users.status,
+    }));
+
+    return {
+      data: formattedData,
+      meta: {
+        page: pageNumber,
+        limit: limitNumber,
+        total,
+        totalPages: Math.ceil(total / limitNumber),
+        hasNextPage: pageNumber * limitNumber < total,
+        hasPrevPage: pageNumber > 1,
+      },
+      stats: {
+        activeCount,
+        blockedCount,
+        totalCount,
+      },
+    };
   }
 }

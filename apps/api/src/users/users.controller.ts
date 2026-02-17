@@ -12,6 +12,7 @@ import {
   Patch,
   UsePipes,
   Body,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
@@ -19,11 +20,22 @@ import { type MeRequest } from 'src/types/me-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { type UpdateProfileDto, updateProfileSchema } from '@repo/schemas';
+import {
+  type UpdateProfileDto,
+  updateProfileSchema,
+  UserQueryDto,
+} from '@repo/schemas';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async findAll(@Query() userQueryDto: UserQueryDto) {
+    return await this.usersService.findAll(userQueryDto);
+  }
 
   @Get('me')
   @HttpCode(HttpStatus.OK)

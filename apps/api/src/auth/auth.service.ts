@@ -6,12 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import {
-  SetPasswordDto,
-  setPasswordSchema,
-  SignUpDto,
-  signUpSchema,
-} from '@repo/schemas';
+import { SetPasswordInput, SignUpInput } from '@repo/schemas';
 import { TokenService } from './token/token.service';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { randomUUID } from 'crypto';
@@ -102,9 +97,8 @@ export class AuthService {
     return { access_token, refresh_token, deviceId };
   }
 
-  async signup(signUpData: SignUpDto) {
-    const parsedData = signUpSchema.parse(signUpData);
-    const { email, password, first_name, last_name, home_address } = parsedData;
+  async signup(signUpData: SignUpInput) {
+    const { email, password, first_name, last_name, home_address } = signUpData;
 
     const user = await this.usersService.findByEmail(email);
     if (user) throw new ConflictException('Email already in use');
@@ -154,9 +148,8 @@ export class AuthService {
     await this.refreshTokenService.removeRefreshToken(userId, deviceId);
   }
 
-  async setPassword(userId: number, setPasswordDto: SetPasswordDto) {
-    const parsedData = setPasswordSchema.parse(setPasswordDto);
-    const { new_password } = parsedData;
+  async setPassword(userId: number, setPasswordDto: SetPasswordInput) {
+    const { new_password } = setPasswordDto;
 
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('User not found');

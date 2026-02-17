@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { createZodDto } from 'nestjs-zod';
 
 export const logInSchema = z.object({
   email: z.email('Please enter a valid email address'),
@@ -151,12 +152,22 @@ export const setPasswordSchema = z
     path: ['confirm_new_password'],
   });
 
-export type LogInDto = z.infer<typeof logInSchema>;
-export type SignUpDto = z.infer<typeof signUpSchema>;
-export type SendOtpDto = z.infer<typeof sendOtpSchema>;
-export type VerifyOtpDto = z.infer<typeof verifyOtpSchema>;
-export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
-export type ResendOtpDto = z.infer<typeof resendOtpSchema>;
-export type VerifyOtpSecureDto = z.infer<typeof verifyOtpSecureSchema>;
-export type ChangePasswordDto = z.infer<typeof changePasswordSchema>;
-export type SetPasswordDto = z.infer<typeof setPasswordSchema>;
+export class LogInDto extends createZodDto(logInSchema) {}
+export class SignUpDto extends createZodDto(signUpSchema) {}
+export class SendOtpDto extends createZodDto(sendOtpSchema) {}
+export class VerifyOtpDto extends createZodDto(verifyOtpSchema) {}
+export class ResetPasswordDto extends createZodDto(resetPasswordSchema) {}
+export class ResendOtpDto extends createZodDto(resendOtpSchema) {}
+export class VerifyOtpSecureDto extends createZodDto(verifyOtpSecureSchema) {}
+export class ChangePasswordDto extends createZodDto(changePasswordSchema) {}
+export class SetPasswordDto extends createZodDto(setPasswordSchema) {}
+
+export type LogInInput = z.infer<typeof logInSchema>;
+export type SignUpInput = z.infer<typeof signUpSchema>;
+export type SendOtpInput = z.infer<typeof sendOtpSchema>;
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type ResendOtpInput = z.infer<typeof resendOtpSchema>;
+export type VerifyOtpSecureInput = z.infer<typeof verifyOtpSecureSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type SetPasswordInput = z.infer<typeof setPasswordSchema>;

@@ -9,9 +9,9 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import {
-  type VerifyOtpSecureDto,
+  VerifyOtpSecureDto,
   verifyOtpSecureSchema,
-  type ChangePasswordDto,
+  ChangePasswordDto,
   changePasswordSchema,
 } from '@repo/schemas';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';

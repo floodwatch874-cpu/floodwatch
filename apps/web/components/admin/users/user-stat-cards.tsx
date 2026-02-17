@@ -29,6 +29,8 @@ export default function UserStatCards({
       params.set('status', status);
     }
 
+    params.set('page', '1'); // Reset to first page on status change
+
     router.push(`${pathname}?${params.toString()}`);
   };
 

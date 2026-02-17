@@ -6,12 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { generateOtp, hashOtp } from '../utils/otp-util';
-import {
-  changePasswordSchema,
-  ChangePasswordDto,
-  verifyOtpSecureSchema,
-  VerifyOtpSecureDto,
-} from '@repo/schemas';
+import { VerifyOtpSecureInput, ChangePasswordInput } from '@repo/schemas';
 import { UsersService } from 'src/users/users.service';
 import { MailerService } from 'src/mailer/mailer.service';
 import Redis from 'ioredis';
@@ -41,9 +36,8 @@ export class ChangePasswordService {
     return;
   }
 
-  async verifyOtp(email: string, verifyOtpSecureDto: VerifyOtpSecureDto) {
-    const parsedData = verifyOtpSecureSchema.parse(verifyOtpSecureDto);
-    const { otp } = parsedData;
+  async verifyOtp(email: string, verifyOtpSecureDto: VerifyOtpSecureInput) {
+    const { otp } = verifyOtpSecureDto;
 
     const otpKey = `otp:reset:${email}`;
     const attemptsKey = `otp:attempts:${email}`;
@@ -76,9 +70,8 @@ export class ChangePasswordService {
     return { resetSessionId };
   }
 
-  async changePassword(changePasswordDto: ChangePasswordDto) {
-    const parsedData = changePasswordSchema.parse(changePasswordDto);
-    const { new_password, resetSessionId } = parsedData;
+  async changePassword(changePasswordDto: ChangePasswordInput) {
+    const { resetSessionId, new_password } = changePasswordDto;
 
     const key = `reset:session:${resetSessionId}`;
     const email = await this.redis.get(key);

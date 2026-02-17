@@ -44,7 +44,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="overflow-hidden rounded-lg flex flex-col flex-1 min-h-0 h-0">
-      <Table>
+      <Table className="w-full table-fixed">
         <TableHeader className="font-poppins bg-[#0066CC]">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
@@ -66,7 +66,7 @@ export function DataTable<TData, TValue>({
       </Table>
       <div className="flex-1 min-h-0 overflow-hidden">
         <ScrollArea className="h-full">
-          <Table>
+          <Table className="w-full table-fixed">
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (

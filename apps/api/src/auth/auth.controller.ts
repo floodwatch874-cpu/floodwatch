@@ -13,9 +13,9 @@ import {
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import {
   logInSchema,
-  type SetPasswordDto,
+  SetPasswordDto,
   setPasswordSchema,
-  type SignUpDto,
+  SignUpDto,
   signUpSchema,
 } from '@repo/schemas';
 import { type AuthRequest } from './types/auth-request.type';

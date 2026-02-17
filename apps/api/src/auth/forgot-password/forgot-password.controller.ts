@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 import {
   sendOtpSchema,
-  type SendOtpDto,
+  SendOtpDto,
   verifyOtpSchema,
-  type VerifyOtpDto,
+  VerifyOtpDto,
   resetPasswordSchema,
-  type ResetPasswordDto,
+  ResetPasswordDto,
   resendOtpSchema,
-  type ResendOtpDto,
+  ResendOtpDto,
 } from '@repo/schemas';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { ForgotPasswordService } from './forgot-password.service';

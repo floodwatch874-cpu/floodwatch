@@ -6,14 +6,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import {
-  VerifyOtpDto,
-  verifyOtpSchema,
-  ResetPasswordDto,
-  resetPasswordSchema,
-  ResendOtpDto,
-  resendOtpSchema,
-  sendOtpSchema,
-  SendOtpDto,
+  ResendOtpInput,
+  ResetPasswordInput,
+  SendOtpInput,
+  VerifyOtpInput,
 } from '@repo/schemas';
 import { randomUUID } from 'crypto';
 import { generateOtp, hashOtp } from '../utils/otp-util';
@@ -30,12 +26,20 @@ export class ForgotPasswordService {
     @Inject('REDIS_CLIENT') private redis: Redis,
   ) {}
 
-  async forgotPassword(sendOtpDto: SendOtpDto) {
-    const parsedData = sendOtpSchema.parse(sendOtpDto);
-    const { email } = parsedData;
+  async forgotPassword(sendOtpDto: SendOtpInput) {
+    const { email } = sendOtpDto;
 
     const user = await this.usersService.findByEmail(email);
     if (!user) return;
+
+    const authAccount = await this.usersService.findAuthAccount(
+      user.id,
+      'local',
+    );
+
+    if (!authAccount) {
+      await this.usersService.createAuthAccount(user.id, 'local', user.email);
+    }
 
     const otp = generateOtp();
     const hashedOtp = await hashOtp(otp);
@@ -48,9 +52,8 @@ export class ForgotPasswordService {
     return;
   }
 
-  async verifyOtp(verifyOtpDto: VerifyOtpDto) {
-    const parsedData = verifyOtpSchema.parse(verifyOtpDto);
-    const { email, otp } = parsedData;
+  async verifyOtp(verifyOtpDto: VerifyOtpInput) {
+    const { email, otp } = verifyOtpDto;
 
     const otpKey = `otp:reset:${email}`;
     const attemptsKey = `otp:attempts:${email}`;
@@ -83,9 +86,8 @@ export class ForgotPasswordService {
     return { resetSessionId };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const parsedData = resetPasswordSchema.parse(resetPasswordDto);
-    const { new_password, resetSessionId } = parsedData;
+  async resetPassword(resetPasswordDto: ResetPasswordInput) {
+    const { new_password, resetSessionId } = resetPasswordDto;
 
     const key = `reset:session:${resetSessionId}`;
     const email = await this.redis.get(key);
@@ -111,9 +113,8 @@ export class ForgotPasswordService {
     return;
   }
 
-  async resendOtp(resendOtpDto: ResendOtpDto) {
-    const parsedData = resendOtpSchema.parse(resendOtpDto);
-    const { email } = parsedData;
+  async resendOtp(resendOtpDto: ResendOtpInput) {
+    const { email } = resendOtpDto;
 
     const user = await this.usersService.findByEmail(email);
     if (!user) return;

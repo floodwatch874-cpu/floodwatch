@@ -19,7 +19,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:seed": "ts-node ./src/drizzle/seed/index.ts",
-    "db:reset": "ts-node ./src/drizzle/reset.ts"
+    "db:reset": "ts-node ./src/drizzle/reset.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
