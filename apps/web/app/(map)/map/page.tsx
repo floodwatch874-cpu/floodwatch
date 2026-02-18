@@ -16,6 +16,7 @@ import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationPanel from '@/components/map/affected-location-panel';
 import SafetyLocationPanel from '@/components/map/safety-location-panel';
+import { ReportFloodAlertDialog } from '@/components/map/report-flood-dialog';
 
 export type SelectedLocation = {
   longitude: number;
@@ -26,6 +27,8 @@ export type SelectedLocation = {
 
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
+
+  const [reportOpen, setReportOpen] = useState(false);
 
   // ✅ Shared state: search → map pin
   const [selectedLocation, setSelectedLocation] =
@@ -61,6 +64,7 @@ export default function InteractiveMapPage() {
                 toggleAffectedLocations={() => togglePopup('affected')}
                 toggleSafetyLocations={() => togglePopup('safety')}
                 toggleHotlines={() => togglePopup('hotlines')}
+                openReportDialog={() => setReportOpen(true)}
               />
             </div>
             <div className="flex justify-end">
@@ -76,10 +80,13 @@ export default function InteractiveMapPage() {
                 show={activePopup === 'hotlines'}
                 onClose={() => setActivePopup(null)}
               />
+              <ReportFloodAlertDialog
+                open={reportOpen}
+                onOpenChange={setReportOpen}
+              />
             </div>
           </div>
 
-          
           {activePanel === 'notification' && <NotificationPanel />}
           {activePanel === 'profile' && <ProfilePanel />}
         </div>

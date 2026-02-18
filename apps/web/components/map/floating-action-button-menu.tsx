@@ -4,16 +4,20 @@ import {
   IconCurrentLocation,
   IconPhoneCall,
   IconShieldCheck,
+  IconWaterpolo
 } from '@tabler/icons-react';
+import Dropzone from '@/components/admin/map/dropzone';
 
 export default function FloatingActionButtonMenu({
   toggleAffectedLocations,
   toggleSafetyLocations,
   toggleHotlines,
+  openReportDialog
 }: {
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
   toggleHotlines: () => void;
+  openReportDialog: () => void;
 }) {
   return (
     <div className="flex flex-col bg-white text-sm rounded-xl shadow-lg h-fit w-fit p-4">
@@ -42,6 +46,15 @@ export default function FloatingActionButtonMenu({
         >
           <IconCurrentLocation className="w-[1.5em]! h-[1.5em]! text-[#3182FF]" />
           <span>Location</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2 justify-start"
+          onClick={openReportDialog}
+        >
+          <IconWaterpolo className="w-[1.5em]! h-[1.5em]! text-[#3182FF]" />
+          <span>Report</span>
         </Button>
 
         <Button

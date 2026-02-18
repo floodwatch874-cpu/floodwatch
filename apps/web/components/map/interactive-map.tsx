@@ -55,7 +55,7 @@ export default function InteractiveMap({
             aria-label="Selected location pin"
           >
             <div className="h-6 w-6 rounded-full bg-red-600 shadow-md" />
-            <div className="mx-auto -mt-1 h-0 w-0 border-x-8 border-x-transparent border-t-[12px] border-t-red-600" />
+            <div className="mx-auto -mt-1 h-0 w-0 border-x-8 border-x-transparent border-t-12 border-t-red-600" />
           </div>
         </Marker>
       )}
