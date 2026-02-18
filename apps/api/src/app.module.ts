@@ -24,6 +24,7 @@ import { AdminModule } from './admin/admin.module';
             colorize: true,
             translateTime: 'yyyy-mm-dd HH:MM:ss',
             ignore: 'pid,hostname',
+            singleLine: true,
           },
         },
       },

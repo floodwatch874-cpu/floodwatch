@@ -25,21 +25,21 @@ import {
   updateProfileSchema,
   UserQueryDto,
 } from '@repo/schemas';
+import { UserStatusGuard } from 'src/guards/user-status/user-status.guard';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, UserStatusGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   async findAll(@Query() userQueryDto: UserQueryDto) {
     return await this.usersService.findAll(userQueryDto);
   }
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   async getMe(@Request() req: MeRequest) {
     const user = await this.usersService.findByIdWithProfile(req.user.id);
 
@@ -48,7 +48,6 @@ export class UsersController {
 
   @Patch('me')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ZodValidationPipe(updateProfileSchema))
   async updateProfile(
     @Request() req: MeRequest,
@@ -59,7 +58,6 @@ export class UsersController {
 
   @Post('me/avatar')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(
     @Request() req: AuthRequest,
@@ -71,7 +69,6 @@ export class UsersController {
 
   @Delete('me/avatar')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   async deleteAvatar(@Request() req: AuthRequest) {
     return await this.usersService.deleteAvatar(req.user.id);
   }

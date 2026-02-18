@@ -3,9 +3,18 @@ import { ActionState } from '@/lib/types/action-state';
 
 export function mapLoginAuthError(err: unknown): ActionState {
   if (axios.isAxiosError(err)) {
-    if (err.response?.status === 401 || err.response?.status === 403) {
+    if (err.response?.status === 401) {
       return {
         errors: { _form: ['Invalid email or password'] },
+        status: 'error',
+      };
+    }
+
+    if (err.response?.status === 403) {
+      return {
+        errors: {
+          _form: ['Your account has been blocked. Please contact support.'],
+        },
         status: 'error',
       };
     }

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   NotFoundException,
   Request,
@@ -8,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { setAuthCookies } from '../utils/auth-util';
-import { Public } from '../decorators/public.decorator';
+import { Public } from '../../decorators/public.decorator';
 import { GoogleAuthGuard } from '../guards/google-auth/google-auth.guard';
 import { type GoogleRequest } from '../types/google-request.type';
 import { ConfigService } from '@nestjs/config';
@@ -17,6 +18,7 @@ import { type Response } from 'express';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { GoogleLinkAuthGuard } from '../guards/google-link-auth/google-link-auth.guard';
 import { type GoogleLinkRequest } from '../types/google-link-request.type';
+import { UserStatusGuard } from 'src/guards/user-status/user-status.guard';
 
 @Controller('auth/google')
 export class GoogleController {
@@ -40,6 +42,11 @@ export class GoogleController {
     const { access_token, refresh_token, deviceId, user } =
       await this.googleService.handleGoogleLogin(req.user);
 
+    if (user.status === 'blocked')
+      res.redirect(
+        this.configService.getOrThrow('FRONTEND_URL') + '/auth/login',
+      );
+
     const isProduction =
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
@@ -51,7 +58,7 @@ export class GoogleController {
   }
 
   @Get('link')
-  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard)
+  @UseGuards(JwtAuthGuard, GoogleLinkAuthGuard, UserStatusGuard)
   async linkGoogleAccount() {}
 
   @Get('link/callback')

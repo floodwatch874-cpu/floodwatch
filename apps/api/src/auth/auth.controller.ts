@@ -89,6 +89,8 @@ export class AuthController {
     @Body() signUpDto: SignUpDto,
     @Res({ passthrough: true }) res: Response,
   ) {
+    console.log('Signup request received for email:', signUpDto.email);
+
     const {
       access_token,
       refresh_token,
@@ -110,6 +112,8 @@ export class AuthController {
     @Request() req: LogoutRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
+    console.log('Logout request received for user:', req.user.id);
+
     const deviceId = req.cookies['device_id'];
 
     await this.authService.logout(req.user.id, deviceId);

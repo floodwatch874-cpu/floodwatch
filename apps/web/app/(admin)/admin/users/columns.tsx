@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useUserStatusDialog } from '@/contexts/user-status-dialog-context';
 
 export const columns: ColumnDef<UsersDto>[] = [
   {
@@ -111,35 +112,45 @@ export const columns: ColumnDef<UsersDto>[] = [
     header: () => <span className="flex justify-center">ACTIONS</span>,
     cell: ({ row }) => {
       const user = row.original;
-
-      const buttonColorMap = {
-        active: 'text-[#FB323B] bg-[#FB323B]/10 hover:bg-[#FB323B]/20',
-        blocked: 'text-[#00D69B] bg-[#00D69B]/10 hover:bg-[#00D69B]/20',
-      };
-
-      const color = buttonColorMap[user.status];
-
-      return (
-        <div className="flex justify-center gap-2">
-          <Tooltip>
-            <TooltipTrigger className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition">
-              <IconEye className="w-[1.5em]! h-[1.5em]!" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>View reports</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger className={cn(`rounded-lg p-1.5 hover:`, color)}>
-              <IconBan className="w-[1.5em]! h-[1.5em]!" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{user.status === 'active' ? 'Block user' : 'Unblock user'}</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      );
+      return <ActionCell user={user} />;
     },
   },
 ];
+
+function ActionCell({ user }: { user: UsersDto }) {
+  const { openDialog } = useUserStatusDialog();
+
+  const buttonColorMap = {
+    active: 'text-[#FB323B] bg-[#FB323B]/10 hover:bg-[#FB323B]/20',
+    blocked: 'text-[#00D69B] bg-[#00D69B]/10 hover:bg-[#00D69B]/20',
+  };
+
+  const color = buttonColorMap[user.status];
+
+  return (
+    <div className="flex justify-center gap-2">
+      <Tooltip>
+        <TooltipTrigger className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition">
+          <IconEye className="w-[1.5em]! h-[1.5em]!" />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>View reports</p>
+        </TooltipContent>
+      </Tooltip>
+
+      <Tooltip>
+        <TooltipTrigger
+          className={cn(`rounded-lg p-1.5 hover:`, color)}
+          onClick={() =>
+            openDialog(user.id, user.status === 'active' ? 'block' : 'unblock')
+          }
+        >
+          <IconBan className="w-[1.5em]! h-[1.5em]!" />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{user.status === 'active' ? 'Block user' : 'Unblock user'}</p>
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  );
+}

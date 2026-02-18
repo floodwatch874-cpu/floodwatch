@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAdminInput } from '@repo/schemas';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { type DrizzleDB } from 'src/drizzle/types/drizzle';
@@ -36,5 +41,21 @@ export class AdminService {
     );
 
     return { message: 'Admin created successfully' };
+  }
+
+  async blockUser(id: number) {
+    const user = await this.usersService.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.usersService.updateUserStatus(id, 'blocked');
+    return { message: 'User blocked successfully' };
+  }
+
+  async unblockUser(id: number) {
+    const user = await this.usersService.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.usersService.updateUserStatus(id, 'active');
+    return { message: 'User unblocked successfully' };
   }
 }

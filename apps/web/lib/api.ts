@@ -23,6 +23,11 @@ api.interceptors.response.use(
       return Promise.reject(err);
     }
 
+    if (err.response?.status === 403) {
+      await api.delete('/auth/logout');
+      window.location.href = '/auth/login';
+    }
+
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 

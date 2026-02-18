@@ -3,6 +3,8 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -27,5 +29,17 @@ export class AdminController {
     @Body() createAdminDto: CreateAdminDto,
   ) {
     return await this.adminService.createAdmin(createAdminDto);
+  }
+
+  @Patch('users/:id/block')
+  @UseGuards(JwtAuthGuard)
+  async blockUser(@Param('id') id: number) {
+    return await this.adminService.blockUser(id);
+  }
+
+  @Patch('users/:id/unblock')
+  @UseGuards(JwtAuthGuard)
+  async unblockUser(@Param('id') id: number) {
+    return await this.adminService.unblockUser(id);
   }
 }
