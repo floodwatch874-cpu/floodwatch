@@ -20,8 +20,6 @@ export async function getUsersData(params: UserQuery) {
     ...(q && { q }),
   });
 
-  console.log(parsed.data);
-
   try {
     const cookie = (await headers()).get('cookie');
     const res = await fetch(

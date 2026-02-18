@@ -1,6 +1,7 @@
 'use client';
 
 import { usePanel } from '@/contexts/panel-context';
+import { useUser } from '@/hooks/use-user';
 import { logout } from '@/lib/services/auth/logout';
 import { IconLogout } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,7 @@ export default function LogoutButton() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { close } = usePanel();
+  const { mutateUser } = useUser();
 
   async function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -18,6 +20,7 @@ export default function LogoutButton() {
     try {
       await logout();
       close();
+      mutateUser(null);
       router.refresh();
     } catch (err) {
       console.error('Logout failed', err);

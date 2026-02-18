@@ -1,10 +1,30 @@
 import Logo from '@/components/auth/logo';
 import { Button } from '@/components/ui/button';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
+import { decodeJwt } from '@/lib/jwt';
 
-export default function AuthLayout({
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get('access_token')?.value;
+
+  if (token) {
+    const payload = decodeJwt(token);
+
+    if (payload?.role === 'admin') {
+      redirect('/admin');
+    } else {
+      redirect('/map');
+    }
+  }
+
   return (
     <main>
       <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">

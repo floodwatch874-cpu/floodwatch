@@ -4,8 +4,8 @@ import { usePathname } from 'next/navigation';
 import {
   IconClipboard,
   IconMap,
+  IconReportAnalytics,
   IconSettings2,
-  IconUser,
   IconUserCog,
   IconUsers,
 } from '@tabler/icons-react';
@@ -29,6 +29,11 @@ export function NavItems() {
       title: 'Interactive Map',
       url: '/admin/map',
       icon: IconMap,
+    },
+    {
+      title: 'Flood Reports',
+      url: '/admin/reports',
+      icon: IconReportAnalytics,
     },
     {
       title: 'Community Feed',

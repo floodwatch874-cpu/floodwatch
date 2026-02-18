@@ -35,26 +35,27 @@ export default async function UserManagementPage({
       <div className="flex-1 flex flex-col min-h-0 gap-4">
         <Suspense fallback={<UserStatCardsSkeleton />}>
           <UserStatCards
-            totalCount={data.stats.totalCount}
-            activeCount={data.stats.activeCount}
-            blockedCount={data.stats.blockedCount}
+            totalCount={data?.stats?.totalCount ?? 0}
+            activeCount={data?.stats?.activeCount ?? 0}
+            blockedCount={data?.stats?.blockedCount ?? 0}
           />
         </Suspense>
 
-        <DataTable columns={columns} data={data.data} />
+        <DataTable columns={columns} data={data?.data ?? []} />
 
         <div className="flex items-center justify-between">
           {/* Pagination controls would go here */}
           <span className="text-sm text-gray-600">
-            Showing {data.data.length} of {data.stats.totalCount} users
+            Showing {data?.data?.length ?? 0} of {data?.stats?.totalCount ?? 0}{' '}
+            users
           </span>
 
           <div>
             <UserPagination
-              currentPage={data.meta.page}
-              totalPages={data.meta.totalPages}
-              hasNextPage={data.meta.hasNextPage}
-              hasPrevPage={data.meta.hasPrevPage}
+              currentPage={data?.meta?.page ?? 1}
+              totalPages={data?.meta?.totalPages ?? 1}
+              hasNextPage={data?.meta?.hasNextPage ?? false}
+              hasPrevPage={data?.meta?.hasPrevPage ?? false}
             />
           </div>
         </div>

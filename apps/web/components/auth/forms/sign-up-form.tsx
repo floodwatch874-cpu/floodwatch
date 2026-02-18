@@ -82,7 +82,7 @@ export default function SignUpForm() {
       form.reset();
       await mutate(SWR_KEYS.me);
 
-      if (user?.role === 'admin') router.push('/admin');
+      if (user?.role === 'admin') router.replace('/admin');
       else router.push('/map');
       router.refresh();
     } catch (err) {

@@ -61,8 +61,8 @@ export default function LoginForm() {
       form.reset();
       await mutateUser();
 
-      if (user?.role === 'admin') router.push('/admin');
-      else router.push('/map');
+      if (user?.role === 'admin') router.replace('/admin');
+      else router.replace('/map');
     } catch (err) {
       setState({
         errors: mapLoginAuthError(err).errors,
