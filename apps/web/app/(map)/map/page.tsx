@@ -2,7 +2,7 @@
 
 import SearchBar from '@/components/map/search-bar';
 import MapLegend from '@/components/map/map-legend';
-import InteractiveMap from '@/components/map/interactive-map';
+import InteractiveMap, { type MockFloodReport } from '@/components/map/interactive-map';
 import { Suspense, useState } from 'react';
 import ProfilePanel from '@/components/map/profile-panel';
 import { usePanel } from '@/contexts/panel-context';
@@ -14,7 +14,6 @@ import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationPanel from '@/components/map/affected-location-panel';
-import SafetyLocationPanel from '@/components/map/safety-location-panel';
 import { ReportFloodAlertDialog } from '@/components/map/report-flood-dialog';
 
 export type SelectedLocation = {
@@ -24,18 +23,53 @@ export type SelectedLocation = {
   source?: 'nominatim' | 'custom';
 };
 
+// ✅ Mock data (top-level is fine)
+const mockReports: MockFloodReport[] = [
+  {
+    id: 'mock-1',
+    longitude: 121.0509,
+    latitude: 14.676,
+    locationName: 'Brgy. San Juan, Marikina',
+    severity: 'High',
+    description:
+      'Flood water is knee-deep near the main road. Vehicles are struggling to pass.',
+    reportedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    status: 'Pending',
+  },
+  {
+    id: 'mock-2',
+    longitude: 121.0636,
+    latitude: 14.6507,
+    locationName: 'Santolan, Pasig',
+    severity: 'Medium',
+    description: 'Water level is ankle to knee-deep in some streets. Proceed with caution.',
+    reportedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    status: 'Verified',
+  },
+  {
+    id: 'mock-3',
+    longitude: 121.0437,
+    latitude: 14.5872,
+    locationName: 'Makati Ave, Makati',
+    severity: 'Low',
+    description: 'Minor flooding near the sidewalk. Passable for light vehicles.',
+    reportedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    status: 'Resolved',
+  },
+];
+
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
-
   const [reportOpen, setReportOpen] = useState(false);
 
-  // ✅ Shared state: search → map pin
-  const [selectedLocation, setSelectedLocation] =
-    useState<SelectedLocation | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null);
 
-  const [activePopup, setActivePopup] = useState<
-    'affected' | 'safety' | 'hotlines' | null
-  >(null);
+  const [activePopup, setActivePopup] = useState<'affected' | 'safety' | 'hotlines' | null>(
+    null
+  );
+
+  // ✅ NEW: selected report for panel
+  const [selectedReport, setSelectedReport] = useState<MockFloodReport | null>(null);
 
   const { activePanel } = usePanel();
 
@@ -76,23 +110,12 @@ export default function InteractiveMapPage() {
                 }}
               />
             </div>
+
             <div className="flex justify-end">
-              <AffectedLocationPopup
-                show={activePopup === 'affected'}
-                onClose={() => setActivePopup(null)}
-              />
-              <SafetyLocationsPopup
-                show={activePopup === 'safety'}
-                onClose={() => setActivePopup(null)}
-              />
-              <HotlinesPopup
-                show={activePopup === 'hotlines'}
-                onClose={() => setActivePopup(null)}
-              />
-              <ReportFloodAlertDialog
-                open={reportOpen}
-                onOpenChange={setReportOpen}
-              />
+              <AffectedLocationPopup show={activePopup === 'affected'} onClose={() => setActivePopup(null)} />
+              <SafetyLocationsPopup show={activePopup === 'safety'} onClose={() => setActivePopup(null)} />
+              <HotlinesPopup show={activePopup === 'hotlines'} onClose={() => setActivePopup(null)} />
+              <ReportFloodAlertDialog open={reportOpen} onOpenChange={setReportOpen} />
             </div>
           </div>
 
@@ -100,11 +123,16 @@ export default function InteractiveMapPage() {
           {activePanel === 'profile' && <ProfilePanel />}
         </div>
 
-        {/* <SafetyLocationPanel/> */}
+        {/* ✅ Panel opens when a pin is clicked */}
+        {selectedReport && (
+          <AffectedLocationPanel report={selectedReport} onClose={() => setSelectedReport(null)} />
+        )}
 
-        {/* <AffectedLocationPanel/> */}
-
-        <InteractiveMap selectedLocation={selectedLocation} />
+        <InteractiveMap
+          selectedLocation={selectedLocation}
+          reports={mockReports}
+          onSelectReport={setSelectedReport}
+        />
       </div>
     </MapProvider>
   );

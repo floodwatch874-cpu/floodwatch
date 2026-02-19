@@ -33,8 +33,7 @@ export function ReportFloodAlertDialog({
       <DialogContent className="min-w-[60vw] sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="grid grid-cols-3 gap-4">
           <div className="grid col-span-2">
-            {/* How is this  */}
-            {/* <InteractiveMap /> */}
+            <InteractiveMap mapId='report-map'/>
           </div>
 
           <div className="grid col-span-1 gap-y-6">
