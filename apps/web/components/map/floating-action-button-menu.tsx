@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   IconAlertTriangle,
@@ -13,16 +15,25 @@ export default function FloatingActionButtonMenu({
   toggleSafetyLocations,
   toggleHotlines,
   openReportDialog,
+
+  // To get current location
+  onUseCurrentLocation,
 }: {
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
   toggleHotlines: () => void;
   openReportDialog: () => void;
+
+  // To get Current Location
+  onUseCurrentLocation: (coords: { latitude: number; longitude: number }) => void;
+
 }) {
   const handleLocationClick = async () => {
     try {
       const { longitude, latitude } = await getUserLocation();
-      alert(`Latitude: ${latitude}, Longitude: ${longitude}`);
+      
+      // Changed in getting current location
+      onUseCurrentLocation({ latitude, longitude });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to get location');
     }

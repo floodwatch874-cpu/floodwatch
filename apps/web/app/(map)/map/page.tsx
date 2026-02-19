@@ -64,6 +64,16 @@ export default function InteractiveMapPage() {
                 toggleSafetyLocations={() => togglePopup('safety')}
                 toggleHotlines={() => togglePopup('hotlines')}
                 openReportDialog={() => setReportOpen(true)}
+                
+                // ✅ ADDED: sets your selectedLocation, so the map flies + shows red pin
+                onUseCurrentLocation={({ latitude, longitude }) => {
+                  setSelectedLocation({
+                    latitude,
+                    longitude,
+                    label: 'My Current Location',
+                    source: 'custom',
+                  });
+                }}
               />
             </div>
             <div className="flex justify-end">

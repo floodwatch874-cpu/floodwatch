@@ -7,30 +7,40 @@ export const setAuthCookies = (
   deviceId: string,
   isProduction: boolean,
 ) => {
-  res.cookie('access_token', accessToken, {
+  const cookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: isProduction ? ('none' as const) : ('lax' as const),
     domain: isProduction ? '.floodwatch.me' : undefined,
     path: '/',
+  };
+
+  res.cookie('access_token', accessToken, {
+    ...cookieOptions,
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
   res.cookie('refresh_token', refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    domain: isProduction ? '.floodwatch.me' : undefined,
-    path: '/',
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
   res.cookie('device_id', deviceId, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    domain: isProduction ? '.floodwatch.me' : undefined,
-    path: '/',
+    ...cookieOptions,
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
   });
+};
+
+export const clearAuthCookies = (res: Response, isProduction: boolean) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? ('none' as const) : ('lax' as const),
+    domain: isProduction ? '.floodwatch.me' : undefined,
+    path: '/',
+  };
+
+  res.clearCookie('access_token', cookieOptions);
+  res.clearCookie('refresh_token', cookieOptions);
+  res.clearCookie('device_id', cookieOptions);
 };

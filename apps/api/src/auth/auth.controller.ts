@@ -24,7 +24,7 @@ import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { type Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { setAuthCookies } from 'src/auth/utils/auth-util';
+import { clearAuthCookies, setAuthCookies } from 'src/auth/utils/auth-util';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { type RefreshTokenRequest } from './types/refresh-token-request.type';
 import { type LogoutRequest } from './types/logout-request.type';
@@ -118,9 +118,9 @@ export class AuthController {
 
     await this.authService.logout(req.user.id, deviceId);
 
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    res.clearCookie('device_id');
+    const isProduction =
+      this.configService.getOrThrow('NODE_ENV') === 'production';
+    clearAuthCookies(res, isProduction);
 
     return { message: 'Logged out successfully' };
   }

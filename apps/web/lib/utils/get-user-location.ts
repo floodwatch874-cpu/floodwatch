@@ -15,9 +15,22 @@ export const getUserLocation = (): Promise<{
         });
       },
       (error) => {
-        reject(error);
+        if (error.code === error.PERMISSION_DENIED) {
+          reject(new Error('Location permission denied. Please allow location access.'));
+          return;
+        }
+        if (error.code === error.POSITION_UNAVAILABLE) {
+          reject(new Error('Location unavailable. Turn on GPS/Wi-Fi and try again.'));
+          return;
+        }
+        if (error.code === error.TIMEOUT) {
+          reject(new Error('Location request timed out. Try again.'));
+          return;
+        }
+        reject(new Error(error.message || 'Failed to get location.'));
       },
-      { enableHighAccuracy: true },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+
     );
   });
 };
