@@ -1,11 +1,12 @@
 'use client';
 
 import { Fragment, useEffect, useRef } from 'react';
-import Map, { Marker, type MapRef } from 'react-map-gl/maplibre';
+import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FloodReportsDto } from '@repo/schemas';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
 import RadiusCircle from './radius-circle';
+import { useBoundary } from '@/contexts/boundary-context';
 
 type SelectedLocation = {
   longitude: number;
@@ -23,6 +24,7 @@ export default function InteractiveMap({
   onSelectReport: (report: FloodReportsDto) => void;
 }) {
   const mapRef = useRef<MapRef | null>(null);
+  const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
 
   // When user searches a location, fly to it
   useEffect(() => {
@@ -60,6 +62,38 @@ export default function InteractiveMap({
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
+      {/* boundary fill */}
+      {caloocanGeoJSON && (
+        <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
+          <Layer
+            id="caloocan-fill"
+            type="fill"
+            paint={{
+              'fill-color': '#0066CC',
+              'fill-opacity': 0.05,
+            }}
+          />
+        </Source>
+      )}
+
+      {/* boundary outline */}
+      {caloocanOutlineGeoJSON && (
+        <Source
+          id="caloocan-outline"
+          type="geojson"
+          data={caloocanOutlineGeoJSON}
+        >
+          <Layer
+            id="caloocan-outline-line"
+            type="line"
+            paint={{
+              'line-color': '#0066CC',
+              'line-width': 2,
+            }}
+          />
+        </Source>
+      )}
+
       {/* Flood report pins */}
       {reports.map((report) => (
         <Fragment key={report.id}>
@@ -86,7 +120,7 @@ export default function InteractiveMap({
           longitude={selectedLocation.longitude}
           latitude={selectedLocation.latitude}
           color="#FF0000"
-        ></Marker>
+        />
       )}
     </Map>
   );

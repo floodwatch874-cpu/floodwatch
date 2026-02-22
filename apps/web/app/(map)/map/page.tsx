@@ -16,6 +16,7 @@ import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import { FloodReportsDto } from '@repo/schemas';
+import { BoundaryProvider } from '@/contexts/boundary-context';
 
 export type SelectedLocation = {
   longitude: number;
@@ -27,11 +28,9 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  // ✅ NEW: selected report for panel
   const [selectedReport, setSelectedReport] = useState<FloodReportsDto | null>(
     null,
   );
-
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
@@ -57,72 +56,74 @@ export default function InteractiveMapPage() {
   }, []);
 
   return (
-    <MapProvider>
-      <div className="relative w-full h-full">
-        <Suspense fallback={null}>
-          <GoogleLinkToastHandler />
-        </Suspense>
+    <BoundaryProvider>
+      <MapProvider>
+        <div className="relative w-full h-full">
+          <Suspense fallback={null}>
+            <GoogleLinkToastHandler />
+          </Suspense>
 
-        <div className="absolute flex justify-center top-0 left-0 w-full h-full p-4 z-10 max-w-lg min-h-0">
-          <SearchBar
-            toggleLegend={() => setShowLegend(!showLegend)}
-            onSelectLocation={setSelectedLocation}
-          />
-
-          {selectedReport && (
-            <AffectedLocationsPanel
-              report={selectedReport}
-              onClose={() => setSelectedReport(null)}
+          <div className="absolute flex justify-center top-0 left-0 w-full h-full p-4 z-10 max-w-lg min-h-0">
+            <SearchBar
+              toggleLegend={() => setShowLegend(!showLegend)}
+              onSelectLocation={setSelectedLocation}
             />
-          )}
-        </div>
 
-        <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-4 justify-end">
-              <MapLegend show={showLegend} />
-              <FloatingActionButtonMenu
-                toggleAffectedLocations={() => togglePopup('affected')}
-                toggleSafetyLocations={() => togglePopup('safety')}
-                toggleHotlines={() => togglePopup('hotlines')}
-                // ✅ ADDED: sets your selectedLocation, so the map flies + shows red pin
-                onUseCurrentLocation={({ latitude, longitude }) => {
-                  setSelectedLocation({
-                    latitude,
-                    longitude,
-                    label: 'My Current Location',
-                    source: 'custom',
-                  });
-                }}
+            {selectedReport && (
+              <AffectedLocationsPanel
+                report={selectedReport}
+                onClose={() => setSelectedReport(null)}
               />
-            </div>
-
-            <div className="flex justify-end">
-              <AffectedLocationPopup
-                show={activePopup === 'affected'}
-                onClose={() => setActivePopup(null)}
-              />
-              <SafetyLocationsPopup
-                show={activePopup === 'safety'}
-                onClose={() => setActivePopup(null)}
-              />
-              <HotlinesPopup
-                show={activePopup === 'hotlines'}
-                onClose={() => setActivePopup(null)}
-              />
-            </div>
+            )}
           </div>
 
-          {activePanel === 'notification' && <NotificationPanel />}
-          {activePanel === 'profile' && <ProfilePanel />}
-        </div>
+          <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-4 justify-end">
+                <MapLegend show={showLegend} />
+                <FloatingActionButtonMenu
+                  toggleAffectedLocations={() => togglePopup('affected')}
+                  toggleSafetyLocations={() => togglePopup('safety')}
+                  toggleHotlines={() => togglePopup('hotlines')}
+                  // ADDED: sets your selectedLocation, so the map flies + shows red pin
+                  onUseCurrentLocation={({ latitude, longitude }) => {
+                    setSelectedLocation({
+                      latitude,
+                      longitude,
+                      label: 'My Current Location',
+                      source: 'custom',
+                    });
+                  }}
+                />
+              </div>
 
-        <InteractiveMap
-          selectedLocation={selectedLocation}
-          reports={reports}
-          onSelectReport={setSelectedReport}
-        />
-      </div>
-    </MapProvider>
+              <div className="flex justify-end">
+                <AffectedLocationPopup
+                  show={activePopup === 'affected'}
+                  onClose={() => setActivePopup(null)}
+                />
+                <SafetyLocationsPopup
+                  show={activePopup === 'safety'}
+                  onClose={() => setActivePopup(null)}
+                />
+                <HotlinesPopup
+                  show={activePopup === 'hotlines'}
+                  onClose={() => setActivePopup(null)}
+                />
+              </div>
+            </div>
+
+            {activePanel === 'notification' && <NotificationPanel />}
+            {activePanel === 'profile' && <ProfilePanel />}
+          </div>
+
+          <InteractiveMap
+            selectedLocation={selectedLocation}
+            reports={reports}
+            onSelectReport={setSelectedReport}
+          />
+        </div>
+      </MapProvider>
+    </BoundaryProvider>
   );
 }

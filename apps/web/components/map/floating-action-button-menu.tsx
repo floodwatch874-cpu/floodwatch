@@ -15,7 +15,7 @@ export default function FloatingActionButtonMenu({
   toggleSafetyLocations,
   toggleHotlines,
 
-  // To get current location
+  // ✅ ADDED
   onUseCurrentLocation,
 }: {
   toggleAffectedLocations: () => void;
