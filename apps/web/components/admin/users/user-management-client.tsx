@@ -2,6 +2,7 @@
 
 import { UserStatusDialogProvider } from '@/contexts/user-status-dialog-context';
 import UserStatusDialog from './user-status-dialog';
+import { NavigationProvider } from '@/contexts/navigation-context';
 
 export default function UserManagementClient({
   children,
@@ -10,8 +11,10 @@ export default function UserManagementClient({
 }) {
   return (
     <UserStatusDialogProvider>
-      {children}
-      <UserStatusDialog />
+      <NavigationProvider>
+        {children}
+        <UserStatusDialog />
+      </NavigationProvider>
     </UserStatusDialogProvider>
   );
 }

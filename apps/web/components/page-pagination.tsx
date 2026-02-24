@@ -9,24 +9,32 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useNavigation } from '@/contexts/navigation-context';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-type UserPaginationProps = {
+type PagePaginationProps = {
   currentPage: number;
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
 };
 
-export default function UserPagination({
+export default function PagePagination({
   currentPage: currentPageProp,
   totalPages,
   hasNextPage,
   hasPrevPage,
-}: UserPaginationProps) {
+}: PagePaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(currentPageProp);
+  const pageParam = searchParams.get('page');
+  const currentPageFromParams = pageParam ? Number(pageParam) : NaN;
+  const currentPage = Number.isFinite(currentPageFromParams)
+    ? currentPageFromParams
+    : Number(currentPageProp);
+  const { navigate } = useNavigation();
+  const canGoPrev = currentPage > 1 && hasPrevPage;
+  const canGoNext = currentPage < totalPages && hasNextPage;
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -73,9 +81,13 @@ export default function UserPagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={hasPrevPage ? createPageUrl(currentPage - 1) : undefined}
-            aria-disabled={!hasPrevPage}
-            className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
+            href={createPageUrl(currentPage - 1)}
+            aria-disabled={!canGoPrev}
+            className={!canGoPrev ? 'pointer-events-none opacity-50' : ''}
+            onClick={(e) => {
+              e.preventDefault();
+              if (canGoPrev) navigate(createPageUrl(currentPage - 1));
+            }}
           />
         </PaginationItem>
 
@@ -94,6 +106,10 @@ export default function UserPagination({
               <PaginationLink
                 href={createPageUrl(pageNum)}
                 isActive={pageNum === currentPage}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(createPageUrl(pageNum));
+                }}
               >
                 {pageNum}
               </PaginationLink>
@@ -103,9 +119,13 @@ export default function UserPagination({
 
         <PaginationItem>
           <PaginationNext
-            href={hasNextPage ? createPageUrl(currentPage + 1) : undefined}
-            aria-disabled={!hasNextPage}
-            className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
+            href={createPageUrl(currentPage + 1)}
+            aria-disabled={!canGoNext}
+            className={!canGoNext ? 'pointer-events-none opacity-50' : ''}
+            onClick={(e) => {
+              e.preventDefault();
+              if (canGoNext) navigate(createPageUrl(currentPage + 1));
+            }}
           />
         </PaginationItem>
       </PaginationContent>

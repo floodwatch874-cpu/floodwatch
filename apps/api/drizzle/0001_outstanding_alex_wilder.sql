@@ -1,1 +1,0 @@
-ALTER TABLE "reports" ADD COLUMN "location" text DEFAULT 'Unknown location' NOT NULL;

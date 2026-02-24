@@ -4,3 +4,8 @@ export const SEVERITY_COLOR_MAP: Record<string, string> = {
   moderate: '#F0B204',
   low: '#2B7FFF',
 };
+
+export const REPORT_STATUS_COLOR_MAP: Record<string, string> = {
+  verified: '#00D69B',
+  unverified: '#FF6900',
+};

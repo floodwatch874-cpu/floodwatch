@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiFetchClient } from '@/lib/api-fetch-client';
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 
 export function useReports() {
-  const [reports, setReports] = useState<FloodReportsDto[]>([]);
+  const [reports, setReports] = useState<ReportsDto[]>([]);
 
   useEffect(() => {
     const fetchReports = async () => {

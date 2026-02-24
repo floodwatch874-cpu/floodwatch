@@ -9,25 +9,38 @@ export const reportFloodAlertSchema = z.object({
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
 });
 
-export const floodReportsSchema = z.object({
-  id: z.number(),
-  userId: z.number(),
-  name: z.string(),
-  email: z.string(),
-  profilePicture: z.string().optional(),
+export const reportsSchema = z.object({
+  id: z.string(),
+  reporter: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+      email: z.string(),
+      profilePicture: z.string(),
+    })
+    .nullable(),
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
   status: z.enum(['verified', 'unverified']),
-  description: z.string().optional(),
+  description: z.string().nullable(),
   range: z.number(),
   longitude: z.number(),
   latitude: z.number(),
   location: z.string(),
-  image: z.string().optional(),
+  image: z.string().nullable(),
   reportedAt: z.string(),
 });
 
-export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
-export class FloodReportsDto extends createZodDto(floodReportsSchema) {}
+export const reportQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  status: z.enum(['unverified', 'verified']).optional(),
+  q: z.string().optional(),
+});
 
-export type FloodReportsInput = z.infer<typeof floodReportsSchema>;
+export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
+export class ReportsDto extends createZodDto(reportsSchema) {}
+export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
+
+export type ReportsInput = z.infer<typeof reportsSchema>;
 export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
+export type ReportQueryInput = z.infer<typeof reportQuerySchema>;

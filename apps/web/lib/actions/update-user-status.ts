@@ -1,19 +1,15 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { getApiUrl } from '@/lib/utils/get-api-url';
+import { apiFetchServer } from '../api-fetch-server';
+import { revalidatePath } from 'next/cache';
 
 export async function blockUser(userId: number) {
   try {
-    const cookieStore = await cookies();
-
-    await fetch(`${getApiUrl()}/admin/users/${userId}/block`, {
+    await apiFetchServer(`/admin/users/${userId}/block`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
+
+    revalidatePath('/(admin)/admin/users');
 
     return { status: 'success' };
   } catch (error) {
@@ -24,15 +20,11 @@ export async function blockUser(userId: number) {
 
 export async function unblockUser(userId: number) {
   try {
-    const cookieStore = await cookies();
-
-    await fetch(`${getApiUrl()}/admin/users/${userId}/unblock`, {
+    await apiFetchServer(`/admin/users/${userId}/unblock`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
+
+    revalidatePath('/(admin)/admin/users');
 
     return { status: 'success' };
   } catch (error) {

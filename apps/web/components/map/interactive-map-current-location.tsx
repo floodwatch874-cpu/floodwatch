@@ -5,7 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { Spinner } from '@/components/ui/spinner';
 import RadiusCircle from '@/components/radius-circle';
 import { useBoundary } from '@/contexts/boundary-context';
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
+import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 
 export default function CurrentLocationInteractiveMap({
   longitude,

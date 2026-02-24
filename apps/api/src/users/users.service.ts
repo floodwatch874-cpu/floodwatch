@@ -8,7 +8,7 @@ import {
 import { DRIZZLE } from '../drizzle/drizzle-connection';
 import { type DrizzleDB } from '../drizzle/types/drizzle';
 import { users } from 'src/drizzle/schemas/users.schema';
-import { and, count, desc, eq, like, or, SQL, sql } from 'drizzle-orm';
+import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { authAccounts } from 'src/drizzle/schemas/auth-accounts.schema';
 import * as bcrypt from 'bcrypt';
 import { profileInfo } from 'src/drizzle/schemas';
@@ -343,75 +343,54 @@ export class UsersService {
     const limitNumber = Number(limit) || 10;
     const offset = (pageNumber - 1) * limitNumber;
 
-    const whereConditions: (SQL<unknown> | undefined)[] = [];
-
-    if (status) {
-      whereConditions.push(eq(users.status, status));
-    }
-
-    if (q) {
-      whereConditions.push(
-        or(
-          like(profileInfo.firstName, `%${q}%`),
-          like(profileInfo.lastName, `%${q}%`),
-          like(users.email, `%${q}%`),
-          sql`CONCAT(${profileInfo.firstName}, ' ', ${profileInfo.lastName}) ILIKE ${`%${q}%`}`,
-        ),
-      );
-    }
-
-    const whereClause =
-      whereConditions.length > 0 ? and(...whereConditions) : undefined;
-
-    const data = await this.db
-      .select()
-      .from(users)
-      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(whereClause)
-      .orderBy(desc(users.createdAt))
-      .limit(limitNumber)
-      .offset(offset);
-
-    const [{ total }] = await this.db
-      .select({ total: count() })
-      .from(users)
-      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(whereClause);
-
     const searchCondition = q
       ? or(
+          like(users.email, `%${q}%`),
           like(profileInfo.firstName, `%${q}%`),
           like(profileInfo.lastName, `%${q}%`),
-          like(users.email, `%${q}%`),
-          sql`${profileInfo.firstName} || ' ' || ${profileInfo.lastName} ILIKE ${`%${q}%`}`,
+          sql`CONCAT(${profileInfo.firstName}, ' ', ${profileInfo.lastName}) ILIKE ${`%${q}%`}`,
         )
       : undefined;
 
-    const [{ activeCount }] = await this.db
-      .select({ activeCount: count() })
-      .from(users)
-      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(
-        searchCondition
-          ? and(eq(users.status, 'active'), searchCondition)
-          : eq(users.status, 'active'),
-      );
+    const whereClause =
+      status && searchCondition
+        ? and(eq(users.status, status), searchCondition)
+        : status
+          ? eq(users.status, status)
+          : searchCondition;
 
-    const [{ blockedCount }] = await this.db
-      .select({ blockedCount: count() })
-      .from(users)
-      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(
-        searchCondition
-          ? and(eq(users.status, 'blocked'), searchCondition)
-          : eq(users.status, 'blocked'),
-      );
+    const [data, counts, statsResult] = await Promise.all([
+      // Main paginated query
+      this.db
+        .select()
+        .from(users)
+        .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+        .where(whereClause)
+        .orderBy(desc(users.createdAt))
+        .limit(limitNumber)
+        .offset(offset),
 
-    const [{ totalCount }] = await this.db
-      .select({ totalCount: count() })
-      .from(users)
-      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(searchCondition);
+      // ✅ Paginated total: respects BOTH status filter + search
+      this.db
+        .select({ total: count() })
+        .from(users)
+        .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+        .where(whereClause),
+
+      // ✅ Stats: only respects search, not status (so counts are always accurate)
+      this.db
+        .select({
+          totalCount: count(),
+          activeCount: sql<number>`COUNT(*) FILTER (WHERE ${users.status} = 'active')`,
+          blockedCount: sql<number>`COUNT(*) FILTER (WHERE ${users.status} = 'blocked')`,
+        })
+        .from(users)
+        .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+        .where(searchCondition),
+    ]);
+
+    const { total } = counts[0];
+    const { totalCount, activeCount, blockedCount } = statsResult[0];
 
     const formattedData = data.map((item) => ({
       id: item.users.id,

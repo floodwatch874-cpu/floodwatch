@@ -13,13 +13,11 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { useUserStatusDialog } from '@/contexts/user-status-dialog-context';
 import { blockUser, unblockUser } from '@/lib/actions/update-user-status';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function UserStatusDialog() {
   const { userId, action, open, closeDialog } = useUserStatusDialog();
   const [isPending, setIsPending] = useState(false);
-  const router = useRouter();
 
   const isBlocking = action === 'block';
 
@@ -33,7 +31,6 @@ export default function UserStatusDialog() {
         await unblockUser(userId);
       }
       closeDialog();
-      router.refresh();
     } finally {
       setIsPending(false);
     }

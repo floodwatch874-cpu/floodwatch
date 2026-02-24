@@ -1,7 +1,9 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import UserStatCard from '@/components/admin/users/user-stat-card';
+import { useNavigation } from '@/contexts/navigation-context';
+import { useOptimistic } from 'react';
 
 type UserStatCardsProps = {
   totalCount: number;
@@ -15,10 +17,12 @@ export default function UserStatCards({
   blockedCount,
 }: UserStatCardsProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const { navigate, startTransition } = useNavigation();
 
   const currentStatus = searchParams.get('status') || 'total';
+
+  const [optimisticStatus, setOptimisticStatus] = useOptimistic(currentStatus);
 
   const handleStatusChange = (status: 'total' | 'active' | 'blocked') => {
     const params = new URLSearchParams(searchParams.toString());
@@ -31,7 +35,10 @@ export default function UserStatCards({
 
     params.set('page', '1'); // Reset to first page on status change
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      setOptimisticStatus(status);
+      navigate(`${pathname}?${params.toString()}`);
+    });
   };
 
   return (
@@ -40,21 +47,21 @@ export default function UserStatCards({
         label="Total Users"
         count={totalCount}
         status="total"
-        isActive={currentStatus === 'total'}
+        isActive={optimisticStatus === 'total'}
         onClick={() => handleStatusChange('total')}
       />
       <UserStatCard
         label="Active Users"
         count={activeCount}
         status="active"
-        isActive={currentStatus === 'active'}
+        isActive={optimisticStatus === 'active'}
         onClick={() => handleStatusChange('active')}
       />
       <UserStatCard
         label="Blocked Users"
         count={blockedCount}
         status="blocked"
-        isActive={currentStatus === 'blocked'}
+        isActive={optimisticStatus === 'blocked'}
         onClick={() => handleStatusChange('blocked')}
       />
     </div>

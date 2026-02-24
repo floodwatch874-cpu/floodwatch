@@ -3,10 +3,11 @@ import { DataTable } from './data-table';
 import { columns } from './columns';
 import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
 import UserStatCards from '@/components/admin/users/user-stat-cards';
-import UserPagination from '@/components/admin/users/user-pagination';
 import { getUsersData } from '@/lib/actions/get-users-data';
 import { UserQuery } from '@/lib/types/user-query';
 import UserManagementClient from '@/components/admin/users/user-management-client';
+import UserDataTableWrapper from '@/components/admin/users/user-data-table-wrapper';
+import PagePagination from '@/components/page-pagination';
 
 export default async function UserManagementPage({
   searchParams,
@@ -38,7 +39,9 @@ export default async function UserManagementPage({
             blockedCount={data?.stats?.blockedCount ?? 0}
           />
 
-          <DataTable columns={columns} data={data?.data ?? []} />
+          <UserDataTableWrapper>
+            <DataTable columns={columns} data={data?.data ?? []} />
+          </UserDataTableWrapper>
 
           <div className="flex items-center justify-between">
             {/* Pagination controls would go here */}
@@ -48,7 +51,7 @@ export default async function UserManagementPage({
             </span>
 
             <div>
-              <UserPagination
+              <PagePagination
                 currentPage={data?.meta?.page ?? 1}
                 totalPages={data?.meta?.totalPages ?? 1}
                 hasNextPage={data?.meta?.hasNextPage ?? false}

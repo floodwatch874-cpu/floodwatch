@@ -6,6 +6,7 @@ import {
   IconMap,
   IconReportAnalytics,
   IconSettings2,
+  IconShieldPin,
   IconUserCog,
   IconUsers,
 } from '@tabler/icons-react';
@@ -34,6 +35,11 @@ export function NavItems() {
       title: 'Flood Reports',
       url: '/admin/reports',
       icon: IconReportAnalytics,
+    },
+    {
+      title: 'Safety Locations',
+      url: '/admin/safety',
+      icon: IconShieldPin,
     },
     {
       title: 'Community Feed',

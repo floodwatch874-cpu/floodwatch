@@ -9,19 +9,9 @@ import {
 import { users } from './users.schema';
 import { doublePrecision } from 'drizzle-orm/pg-core';
 
-export const severityEnum = pgEnum('severity', [
-  'low',
-  'moderate',
-  'high',
-  'critical',
-]);
+export const safetyTypeEnum = pgEnum('safety_type', ['shelter', 'hospital']);
 
-export const reportsStatusEnum = pgEnum('report_status', [
-  'unverified',
-  'verified',
-]);
-
-export const reports = pgTable('reports', {
+export const safety = pgTable('safety', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: integer('user_id').references(() => users.id, {
     onDelete: 'cascade',
@@ -29,12 +19,10 @@ export const reports = pgTable('reports', {
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   location: text('location').notNull().default('Unknown location'),
-  range: doublePrecision('range').notNull(),
   description: text('description'),
   image: text('image'),
   imagePublicId: text('image_public_id'),
-  severity: severityEnum().notNull(),
-  status: reportsStatusEnum().notNull().default('unverified'),
+  type: safetyTypeEnum().notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

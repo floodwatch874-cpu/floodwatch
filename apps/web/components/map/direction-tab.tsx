@@ -1,9 +1,9 @@
 import { IconCurrentLocation, IconNavigation } from '@tabler/icons-react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 
-export default function DirectionTab({ report }: { report: FloodReportsDto }) {
+export default function DirectionTab({ report }: { report: ReportsDto }) {
   return (
     <>
       <div className="flex gap-4 items-start">

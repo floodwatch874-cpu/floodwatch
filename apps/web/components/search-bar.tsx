@@ -5,14 +5,15 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { useNavigation } from '@/contexts/navigation-context';
 import { IconSearch } from '@tabler/icons-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 
 export default function SearchBar({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const { navigate } = useNavigation();
 
   const currentSearch = searchParams.get('q') || '';
 
@@ -24,7 +25,7 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
 
     params.set('page', '1'); // Reset to first page on new search
 
-    router.push(`${pathname}?${params.toString()}`);
+    navigate(`${pathname}?${params.toString()}`);
   }, 300);
 
   return (

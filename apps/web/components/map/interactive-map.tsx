@@ -3,8 +3,8 @@
 import { Fragment, useEffect, useRef } from 'react';
 import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { FloodReportsDto } from '@repo/schemas';
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
+import { ReportsDto } from '@repo/schemas';
+import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 import RadiusCircle from '@/components/radius-circle';
 import { useBoundary } from '@/contexts/boundary-context';
 
@@ -20,8 +20,8 @@ export default function InteractiveMap({
   onSelectReport,
 }: {
   selectedLocation?: SelectedLocation | null;
-  reports: FloodReportsDto[];
-  onSelectReport: (report: FloodReportsDto) => void;
+  reports: ReportsDto[];
+  onSelectReport: (report: ReportsDto) => void;
 }) {
   const mapRef = useRef<MapRef | null>(null);
   const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
@@ -41,7 +41,7 @@ export default function InteractiveMap({
     });
   }, [selectedLocation]);
 
-  const handleSelectReport = (report: FloodReportsDto) => {
+  const handleSelectReport = (report: ReportsDto) => {
     mapRef?.current?.flyTo({
       center: [report.longitude, report.latitude],
       zoom: Math.max(mapRef?.current.getZoom(), 16),

@@ -4,7 +4,7 @@ import { Map, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import RadiusCircle from '@/components/radius-circle';
 import { Spinner } from '@/components/ui/spinner';
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
+import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 
 export default function InteractiveMapReportedLocation({
   longitude,
@@ -30,7 +30,7 @@ export default function InteractiveMapReportedLocation({
       initialViewState={{
         longitude: longitude,
         latitude: latitude,
-        zoom: 14.5,
+        zoom: 13.5,
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >

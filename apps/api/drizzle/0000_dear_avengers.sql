@@ -1,6 +1,7 @@
 CREATE TYPE "public"."provider" AS ENUM('local', 'google');--> statement-breakpoint
 CREATE TYPE "public"."report_status" AS ENUM('unverified', 'verified');--> statement-breakpoint
 CREATE TYPE "public"."severity" AS ENUM('low', 'moderate', 'high', 'critical');--> statement-breakpoint
+CREATE TYPE "public"."safety_type" AS ENUM('shelter', 'hospital');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('user', 'admin');--> statement-breakpoint
 CREATE TYPE "public"."user_status" AS ENUM('active', 'blocked');--> statement-breakpoint
 CREATE TABLE "auth_accounts" (
@@ -17,7 +18,7 @@ CREATE TABLE "auth_accounts" (
 CREATE TABLE "comments" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
-	"report_id" integer,
+	"report_id" uuid,
 	"content" text NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
@@ -46,16 +47,31 @@ CREATE TABLE "refresh_tokens" (
 );
 --> statement-breakpoint
 CREATE TABLE "reports" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" integer,
 	"latitude" double precision NOT NULL,
 	"longitude" double precision NOT NULL,
+	"location" text DEFAULT 'Unknown location' NOT NULL,
 	"range" double precision NOT NULL,
 	"description" text,
 	"image" text,
 	"image_public_id" text,
 	"severity" "severity" NOT NULL,
 	"status" "report_status" DEFAULT 'unverified' NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "safety" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" integer,
+	"latitude" double precision NOT NULL,
+	"longitude" double precision NOT NULL,
+	"location" text DEFAULT 'Unknown location' NOT NULL,
+	"description" text,
+	"image" text,
+	"image_public_id" text,
+	"type" "safety_type" NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
@@ -76,6 +92,7 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_report_id_reports_id_fk" FOREIGN
 ALTER TABLE "profile_info" ADD CONSTRAINT "profile_info_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reports" ADD CONSTRAINT "reports_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "safety" ADD CONSTRAINT "safety_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "first_name_idx" ON "profile_info" USING btree ("first_name");--> statement-breakpoint
 CREATE INDEX "last_name_idx" ON "profile_info" USING btree ("last_name");--> statement-breakpoint
 CREATE UNIQUE INDEX "refresh_tokens_user_id_device_id_index" ON "refresh_tokens" USING btree ("user_id","device_id");--> statement-breakpoint

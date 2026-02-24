@@ -1,4 +1,4 @@
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 import Image from 'next/image';
 import {
   IconArrowBearRight2,
@@ -13,26 +13,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CommunityTab from '@/components/map/community-tab';
 import DirectionTab from '@/components/map/direction-tab';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  REPORT_STATUS_COLOR_MAP,
+  SEVERITY_COLOR_MAP,
+} from '@/lib/utils/get-color-map';
 
 export default function AffectedLocationsPanel({
   report,
   onClose,
 }: {
-  report: FloodReportsDto;
+  report: ReportsDto;
   onClose?: () => void;
 }) {
-  const statusColorMap = {
-    verified: '#00D69B',
-    unverified: '#FF6900',
-  };
-
-  const severityColorMap = {
-    critical: '#FB2C36',
-    high: '#FF6900',
-    moderate: '#F0B204',
-    low: '#2B7FFF',
-  };
-
   return (
     <div className="relative w-full h-full bg-white z-50 min-h-0 flex flex-col max-w-lg pointer-events-auto">
       <button
@@ -62,7 +54,7 @@ export default function AffectedLocationsPanel({
         </div>
         <div
           className="flex flex-col p-4 gap-4 border-l-4 shrink-0"
-          style={{ borderLeftColor: severityColorMap[report?.severity] }}
+          style={{ borderLeftColor: SEVERITY_COLOR_MAP[report?.severity] }}
         >
           {/* row 1 */}
           <h3 className="font-poppins text-lg font-semibold">
@@ -85,8 +77,8 @@ export default function AffectedLocationsPanel({
               <div
                 className="flex items-center rounded-full px-3 py-1"
                 style={{
-                  color: severityColorMap[report?.severity],
-                  backgroundColor: `${severityColorMap[report?.severity]}25`,
+                  color: SEVERITY_COLOR_MAP[report?.severity],
+                  backgroundColor: `${SEVERITY_COLOR_MAP[report?.severity]}25`,
                 }}
               >
                 <span className="text-xs font-medium">
@@ -101,14 +93,14 @@ export default function AffectedLocationsPanel({
             {/* reported by */}
             <div className="flex items-center gap-2 text-gray-600 text-sm">
               <span className="">Reported by:</span>
-              <span className="font-medium">{report?.name}</span>
+              <span className="font-medium">{report?.reporter?.name}</span>
             </div>
 
             <div
               className="flex items-center rounded-full px-3 py-1 w-fit"
               style={{
-                color: statusColorMap[report?.status],
-                backgroundColor: `${statusColorMap[report?.status]}25`,
+                color: REPORT_STATUS_COLOR_MAP[report?.status],
+                backgroundColor: `${REPORT_STATUS_COLOR_MAP[report?.status]}25`,
               }}
             >
               <div className="flex items-center gap-2 text-xs">

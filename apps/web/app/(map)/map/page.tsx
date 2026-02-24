@@ -14,7 +14,7 @@ import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 import { BoundaryProvider } from '@/contexts/boundary-context';
 import { useReports } from '@/hooks/use-reports';
 
@@ -28,9 +28,7 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [selectedReport, setSelectedReport] = useState<FloodReportsDto | null>(
-    null,
-  );
+  const [selectedReport, setSelectedReport] = useState<ReportsDto | null>(null);
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
