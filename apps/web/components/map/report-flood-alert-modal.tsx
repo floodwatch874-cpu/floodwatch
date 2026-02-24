@@ -27,6 +27,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { reportFloodAlertSchema } from '@repo/schemas';
 import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 export default function ReportFloodAlertModal({
   onSuccess,
@@ -127,7 +128,7 @@ export default function ReportFloodAlertModal({
     if (!parsedData.success) {
       setState({
         status: 'error',
-        errors: parsedData.error.flatten().fieldErrors,
+        errors: z.flattenError(parsedData.error).fieldErrors,
       });
       return;
     }
@@ -225,14 +226,13 @@ export default function ReportFloodAlertModal({
 
                   {/* Range */}
                   <div className="space-y-2">
-                    <Label htmlFor="range">Range</Label>
+                    <Label htmlFor="range">Range (m)</Label>
                     <Input
                       id="range"
                       name="range"
                       type="number"
                       placeholder="Enter the range"
-                      min={0.1}
-                      step={0.1}
+                      min={1}
                       value={radius}
                       onChange={(e) => setRadius(Number(e.target.value))}
                     />

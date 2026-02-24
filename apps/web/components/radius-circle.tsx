@@ -67,6 +67,7 @@ export default function RadiusCircle({
         paint: {
           'line-color': color,
           'line-width': 2,
+          'line-dasharray': [4, 2],
         },
       });
     };

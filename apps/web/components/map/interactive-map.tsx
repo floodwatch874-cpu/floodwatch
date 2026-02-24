@@ -7,6 +7,7 @@ import { ReportsDto } from '@repo/schemas';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 import RadiusCircle from '@/components/radius-circle';
 import { useBoundary } from '@/contexts/boundary-context';
+import { FloodMarker } from '../admin/markers/flood-marker';
 
 type SelectedLocation = {
   longitude: number;
@@ -102,8 +103,11 @@ export default function InteractiveMap({
             longitude={report.longitude}
             latitude={report.latitude}
             color={SEVERITY_COLOR_MAP[report.severity]}
+            anchor="bottom"
             onClick={() => handleSelectReport(report)}
-          />
+          >
+            <FloodMarker severity={report.severity} />
+          </Marker>
           <RadiusCircle
             id={`${report.id}`}
             longitude={report.longitude}

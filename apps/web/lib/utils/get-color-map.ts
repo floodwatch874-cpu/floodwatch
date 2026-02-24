@@ -5,7 +5,12 @@ export const SEVERITY_COLOR_MAP: Record<string, string> = {
   low: '#2B7FFF',
 };
 
+export const SAFETY_TYPE_COLOR_MAP: Record<string, string> = {
+  shelter: '#7C3AED',
+  hospital: '#EC4899',
+};
+
 export const REPORT_STATUS_COLOR_MAP: Record<string, string> = {
   verified: '#00D69B',
-  unverified: '#FF6900',
+  unverified: '#F0B204',
 };

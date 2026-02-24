@@ -10,12 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import {
-  IconCamera,
-  IconCheck,
-  IconTrash,
-  IconUpload,
-} from '@tabler/icons-react';
+import { IconCheck, IconTrash, IconUpload } from '@tabler/icons-react';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -161,7 +156,6 @@ export function AccountProfilePhotoModal() {
             </AvatarFallback>
           </UIAvatar>
         </button>
-
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit} className="space-y-8">
