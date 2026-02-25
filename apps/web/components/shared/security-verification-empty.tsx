@@ -10,10 +10,10 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 import { IconShield } from '@tabler/icons-react';
-import VerifyOtpModal from './map/verify-otp-modal';
+import VerifyOtpModal from '../map/verify-otp-modal';
 import { useState } from 'react';
 import ChangePasswordForm from '@/components/forms/change-password-form';
-import SendOtpButton from './map/send-otp-button';
+import SendOtpButton from '../map/send-otp-button';
 
 type Step = 'request' | 'change';
 

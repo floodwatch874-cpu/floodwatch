@@ -1,6 +1,6 @@
 'use client';
 
-import InteractiveMapReportedLocation from '@/components/interactive-map-reported-location';
+import InteractiveMapReportedLocation from '@/components/shared/interactive-map-reported-location';
 import {
   Dialog,
   DialogContent,

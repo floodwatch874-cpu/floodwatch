@@ -1,11 +1,11 @@
 import ReportStatCards from '@/components/admin/reports/report-stat-cards';
-import SearchBar from '@/components/search-bar';
+import SearchBar from '@/components/shared/search-bar';
 import { Suspense } from 'react';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { ReportQuery } from '@/lib/types/report-query';
 import { getReportsData } from '@/lib/actions/get-reports-data';
-import PagePagination from '@/components/page-pagination';
+import PagePagination from '@/components/shared/page-pagination';
 import ReportStatCardSkeleton from '@/components/admin/reports/skeleton/report-stat-card-skeleton';
 import FloodReportsDataTableWrapper from '@/components/admin/reports/flood-reports-data-table-wrapper';
 import FloodReportsClient from '@/components/admin/reports/flood-reports-client';

@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @theme {
   --font-inter: var(--font-inter);
@@ -45,8 +45,10 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --radius: 0.5rem;
   --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
   --tracking-tight: calc(var(--tracking-normal) - 0.025em);
@@ -61,14 +63,14 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(1.0000 0 0);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.1408 0.0044 285.8229);
-  --card: oklch(1.0000 0 0);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.1408 0.0044 285.8229);
-  --popover: oklch(1.0000 0 0);
+  --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.1408 0.0044 285.8229);
-  --primary: oklch(0.5220 0.1771 255.8297);
-  --primary-foreground: oklch(1.0000 0 0);
+  --primary: oklch(0.522 0.1771 255.8297);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.9674 0.0013 286.3752);
   --secondary-foreground: oklch(0.2103 0.0059 285.8852);
   --muted: oklch(0.9674 0.0013 286.3752);
@@ -76,26 +78,28 @@
   --accent: oklch(0.9674 0.0013 286.3752);
   --accent-foreground: oklch(0.2103 0.0059 285.8852);
   --destructive: oklch(0.6368 0.2078 25.3313);
-  --border: oklch(0.9197 0.0040 286.3202);
-  --input: oklch(0.9197 0.0040 286.3202);
-  --ring: oklch(0.5220 0.1771 255.8297);
-  --chart-1: oklch(0.5220 0.1771 255.8297);
-  --chart-2: oklch(0.7469 0.1352 250.3660);
+  --border: oklch(0.9197 0.004 286.3202);
+  --input: oklch(0.9197 0.004 286.3202);
+  --ring: oklch(0.522 0.1771 255.8297);
+  --chart-1: oklch(0.522 0.1771 255.8297);
+  --chart-2: oklch(0.7469 0.1352 250.366);
   --chart-3: oklch(0.6755 0.1765 252.2592);
-  --chart-4: oklch(0.8280 0.0898 248.9586);
+  --chart-4: oklch(0.828 0.0898 248.9586);
   --chart-5: oklch(0.9117 0.0445 249.3552);
   --sidebar: oklch(0.9791 0 0);
   --sidebar-foreground: oklch(0.3211 0 0);
-  --sidebar-primary: oklch(0.5220 0.1771 255.8297);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.9500 0.0152 241.7732);
+  --sidebar-primary: oklch(0.522 0.1771 255.8297);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.95 0.0152 241.7732);
   --sidebar-accent-foreground: oklch(0.4221 0.1429 255.7757);
   --sidebar-border: oklch(0.9067 0 0);
-  --sidebar-ring: oklch(0.5220 0.1771 255.8297);
+  --sidebar-ring: oklch(0.522 0.1771 255.8297);
   --destructive-foreground: oklch(0.9851 0 0);
   --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   --letter-spacing: 0em;
   --spacing: 0.25rem;
   --tracking-normal: 0em;
@@ -108,8 +112,8 @@
   --card-foreground: oklch(0.9851 0 0);
   --popover: oklch(0.1408 0.0044 285.8229);
   --popover-foreground: oklch(0.9851 0 0);
-  --primary: oklch(0.5220 0.1771 255.8297);
-  --primary-foreground: oklch(1.0000 0 0);
+  --primary: oklch(0.522 0.1771 255.8297);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.2739 0.0055 286.0326);
   --secondary-foreground: oklch(0.9851 0 0);
   --muted: oklch(0.2739 0.0055 286.0326);
@@ -119,25 +123,27 @@
   --destructive: oklch(0.6368 0.2078 25.3313);
   --border: oklch(0.2739 0.0055 286.0326);
   --input: oklch(0.2739 0.0055 286.0326);
-  --ring: oklch(0.5220 0.1771 255.8297);
-  --chart-1: oklch(0.5220 0.1771 255.8297);
-  --chart-2: oklch(0.7469 0.1352 250.3660);
+  --ring: oklch(0.522 0.1771 255.8297);
+  --chart-1: oklch(0.522 0.1771 255.8297);
+  --chart-2: oklch(0.7469 0.1352 250.366);
   --chart-3: oklch(0.6755 0.1765 252.2592);
-  --chart-4: oklch(0.8280 0.0898 248.9586);
+  --chart-4: oklch(0.828 0.0898 248.9586);
   --chart-5: oklch(0.9117 0.0445 249.3552);
   --sidebar: oklch(0.2178 0 0);
   --sidebar-foreground: oklch(0.9067 0 0);
-  --sidebar-primary: oklch(0.5220 0.1771 255.8297);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
+  --sidebar-primary: oklch(0.522 0.1771 255.8297);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.2993 0.0609 251.2891);
-  --sidebar-accent-foreground: oklch(0.8280 0.0898 248.9586);
+  --sidebar-accent-foreground: oklch(0.828 0.0898 248.9586);
   --sidebar-border: oklch(0.3211 0 0);
-  --sidebar-ring: oklch(0.5220 0.1771 255.8297);
+  --sidebar-ring: oklch(0.522 0.1771 255.8297);
   --destructive-foreground: oklch(0.9851 0 0);
   --radius: 0.5rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   --letter-spacing: 0em;
   --spacing: 0.25rem;
 }
@@ -152,11 +158,19 @@
   }
 
   button:not(:disabled),
-  [role="button"]:not(:disabled) {
+  [role='button']:not(:disabled) {
     cursor: pointer;
   }
 
   html {
     @apply scroll-smooth;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

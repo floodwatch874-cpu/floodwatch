@@ -1,6 +1,6 @@
 import Footer from '@/components/auth/footer';
 import LoginForm from '@/components/auth/forms/login-form';
-import OAuthButton from '@/components/oauth-button';
+import OAuthButton from '@/components/shared/oauth-button';
 import Link from 'next/link';
 
 export default async function LoginPage() {

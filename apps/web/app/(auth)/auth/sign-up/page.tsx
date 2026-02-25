@@ -1,6 +1,6 @@
 import Footer from '@/components/auth/footer';
 import SignUpform from '@/components/auth/forms/sign-up-form';
-import OAuthButton from '@/components/oauth-button';
+import OAuthButton from '@/components/shared/oauth-button';
 import Link from 'next/link';
 
 export default function SignUpPage() {

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import TopNavShadow from '@/components/top-nav-shadow';
+import TopNavShadow from '@/components/shared/top-nav-shadow';
 import CollapsibleMenu from '@/components/landing/collapsible-menu';
-import AuthButtons from '@/components/auth-buttons';
+import AuthButtons from '@/components/shared/auth-buttons';
 
 const navItems = [
   { label: 'Features', url: '#features' },
@@ -44,7 +44,7 @@ export default function TopNav() {
               ))}
             </div>
 
-            <AuthButtons />
+            <AuthButtons className="hidden md:flex" />
 
             {/* Mobile Menu */}
             <div className="md:hidden flex items-center">

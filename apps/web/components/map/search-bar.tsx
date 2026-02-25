@@ -6,7 +6,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-import { IconLayersIntersect, IconSearch } from '@tabler/icons-react';
+import { IconSearch } from '@tabler/icons-react';
 
 type NominatimResult = {
   place_id: number;
@@ -35,10 +35,8 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 }
 
 export default function SearchBar({
-  toggleLegend,
   onSelectLocation,
 }: {
-  toggleLegend: () => void;
   onSelectLocation?: (location: SelectedLocation) => void;
 }) {
   const [query, setQuery] = useState('');
@@ -229,16 +227,6 @@ export default function SearchBar({
             disabled={loading}
           >
             <IconSearch />
-          </button>
-        </InputGroupAddon>
-
-        <InputGroupAddon align="inline-end">
-          <button
-            onClick={toggleLegend}
-            className="p-2 rounded-lg bg-[#0066CC] hover:bg-[#005BB5] transition text-white mr-2 text-xs"
-            type="button"
-          >
-            <IconLayersIntersect className="w-[1.5em]! h-[1.5em]!" />
           </button>
         </InputGroupAddon>
       </InputGroup>

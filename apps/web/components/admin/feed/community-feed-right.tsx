@@ -1,5 +1,5 @@
 import PreviewLocationCard from '@/components/admin/feed/preview-location-card';
-import InteractiveMapReportedLocation from '@/components/interactive-map-reported-location';
+import InteractiveMapReportedLocation from '@/components/shared/interactive-map-reported-location';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function CommunityFeedRight() {

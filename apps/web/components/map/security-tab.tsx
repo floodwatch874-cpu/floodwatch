@@ -1,10 +1,10 @@
 'use client';
 
-import { SecurityVerification } from '@/components/security-verification-empty';
+import { SecurityVerification } from '@/components/shared/security-verification-empty';
 import { Button } from '@/components/ui/button';
 import { IconLink, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
-import IconBox from '../icon-box';
+import IconBox from '../shared/icon-box';
 import Image from 'next/image';
 import { useUser } from '@/hooks/use-user';
 import SetPasswordForm from '@/components/forms/set-password-form';

@@ -1,4 +1,4 @@
-import SearchBar from '@/components/search-bar';
+import SearchBar from '@/components/shared/search-bar';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
@@ -7,7 +7,7 @@ import { getUsersData } from '@/lib/actions/get-users-data';
 import { UserQuery } from '@/lib/types/user-query';
 import UserManagementClient from '@/components/admin/users/user-management-client';
 import UserDataTableWrapper from '@/components/admin/users/user-data-table-wrapper';
-import PagePagination from '@/components/page-pagination';
+import PagePagination from '@/components/shared/page-pagination';
 
 export default async function UserManagementPage({
   searchParams,

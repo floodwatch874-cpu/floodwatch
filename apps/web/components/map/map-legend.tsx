@@ -5,7 +5,7 @@ export default function MapLegend({ show }: { show: boolean }) {
   if (!show) return null;
 
   return (
-    <div className="flex flex-col bg-white rounded-xl shadow-md p-4 w-[12vw] gap-3 h-fit">
+    <div className="flex flex-col bg-white rounded-xl shadow-md p-4 min-w-[200px] gap-3 h-fit">
       <h3 className="text-sm font-semibold text-gray-600 flex items-center gap-2">
         <IconInfoCircle className="w-[1.5em]! h-[1.5em]!" />{' '}
         <span>Flood Severity Level</span>

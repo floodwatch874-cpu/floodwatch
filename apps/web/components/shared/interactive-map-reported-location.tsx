@@ -2,7 +2,7 @@
 
 import { Map, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import RadiusCircle from '@/components/radius-circle';
+import RadiusCircle from '@/components/shared/radius-circle';
 import { Spinner } from '@/components/ui/spinner';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 

@@ -1,4 +1,4 @@
-import SearchBar from '@/components/search-bar';
+import SearchBar from '@/components/shared/search-bar';
 import { IconFlag } from '@tabler/icons-react';
 
 export default function CommunityFeedHeader() {

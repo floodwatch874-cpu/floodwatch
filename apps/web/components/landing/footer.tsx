@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Separator } from '@radix-ui/react-separator';
-import { FacebookIcon, GitHubIcon } from '@/components/icons';
+import { FacebookIcon, GitHubIcon } from '@/components/shared/icons';
 import Link from 'next/link';
 
 const quickLinks = [

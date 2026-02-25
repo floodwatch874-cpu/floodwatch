@@ -3,7 +3,7 @@
 import { Layer, Map, Marker, Source } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Spinner } from '@/components/ui/spinner';
-import RadiusCircle from '@/components/radius-circle';
+import RadiusCircle from '@/components/shared/radius-circle';
 import { useBoundary } from '@/contexts/boundary-context';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 

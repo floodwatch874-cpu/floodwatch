@@ -1,4 +1,4 @@
-import SearchBar from '@/components/search-bar';
+import SearchBar from '@/components/shared/search-bar';
 import MapLeft from '@/components/admin/map/map-left';
 import MapRight from '@/components/admin/map/map-right';
 import { BoundaryProvider } from '@/contexts/boundary-context';
