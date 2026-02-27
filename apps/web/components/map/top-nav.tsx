@@ -19,7 +19,7 @@ import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import Clock from '@/components/map/clock';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ReportFloodAlertModal from './report-flood-alert-modal';
+import ReportFloodAlertDialog from './report-flood-alert-dialog';
 
 export default function TopNav() {
   const { toggle } = usePanel();
@@ -99,7 +99,7 @@ export default function TopNav() {
           </div>
         ) : user ? (
           <div className="flex items-center gap-3 sm:gap-6 shrink-0 ml-auto 2xl:ml-0 order-first 2xl:order-0">
-            <ReportFloodAlertModal />
+            <ReportFloodAlertDialog />
 
             <div className="flex items-center gap-4">
               {/* Notification button maybe dropdown */}

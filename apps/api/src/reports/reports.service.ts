@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateFloodAlertInput,
-  FloodAlertInput,
+  ReportFloodAlertInput,
   ReportQueryInput,
 } from '@repo/schemas';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
@@ -152,7 +152,7 @@ export class ReportsService {
 
   async createReport(
     userId: number,
-    floodAlertDto: FloodAlertInput,
+    floodAlertDto: ReportFloodAlertInput,
     image: Express.Multer.File,
   ) {
     const { latitude, longitude, severity, description, range } = floodAlertDto;

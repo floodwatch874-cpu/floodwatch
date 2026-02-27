@@ -1,10 +1,9 @@
 'use server';
 
-import { userQuerySchema } from '@repo/schemas';
-import { UserQuery } from '@/lib/types/user-query';
+import { UserQueryInput, userQuerySchema } from '@repo/schemas';
 import { apiFetchServer } from '../api-fetch-server';
 
-export async function getUsersData(params: UserQuery) {
+export async function getUsersData(params: UserQueryInput) {
   const parsed = userQuerySchema.safeParse(params);
 
   if (!parsed.success) {

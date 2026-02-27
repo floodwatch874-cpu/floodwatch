@@ -27,7 +27,7 @@ export default function TopNav() {
                 width={32}
                 height={32}
               />
-              <h1 className="text-[#FFFFFF] font-bold text-xl">FloodWatch</h1>
+              <h1 className="text-[#FFFFFF] font-medium text-xl">FloodWatch</h1>
             </Link>
           </div>
 

@@ -21,8 +21,8 @@ import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard
 import {
   type CreateFloodAlertInput,
   createFloodAlertSchema,
-  type FloodAlertInput,
-  floodAlertSchema,
+  type ReportFloodAlertInput,
+  reportFloodAlertSchema,
   ReportQueryDto,
 } from '@repo/schemas';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
@@ -50,10 +50,10 @@ export class ReportsController {
   @UseInterceptors(FileInterceptor('image'))
   async createReport(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: FloodAlertInput,
+    @Body() createFloodAlertDto: ReportFloodAlertInput,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = floodAlertSchema.safeParse(createFloodAlertDto);
+    const parsedData = reportFloodAlertSchema.safeParse(createFloodAlertDto);
     if (!parsedData.success) {
       throw new BadRequestException({
         message: 'Validation failed',

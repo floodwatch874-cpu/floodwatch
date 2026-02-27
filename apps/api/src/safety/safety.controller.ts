@@ -2,9 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
@@ -14,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
   type CreateSafetyLocationInput,
   createSafetyLocationSchema,
+  SafetyLocationQueryDto,
 } from '@repo/schemas';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
@@ -23,6 +26,18 @@ import { SafetyService } from './safety.service';
 @Controller('safety')
 export class SafetyController {
   constructor(private safetyService: SafetyService) {}
+
+  @Get('')
+  @HttpCode(HttpStatus.OK)
+  async findAllPublic() {
+    return await this.safetyService.findAllPublic();
+  }
+
+  @Get('admin')
+  @HttpCode(HttpStatus.OK)
+  async findAll(@Query() safetyLocationQuery: SafetyLocationQueryDto) {
+    return await this.safetyService.findAll(safetyLocationQuery);
+  }
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)

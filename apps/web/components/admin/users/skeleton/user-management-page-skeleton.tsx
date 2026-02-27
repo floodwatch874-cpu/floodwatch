@@ -1,7 +1,7 @@
 import { UserDataTableSkeleton } from '@/components/admin/users/skeleton/user-data-table-skeleton';
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
-import UserStatCardSkeleton from '@/components/admin/users/skeleton/user-stat-card-skeleton';
+import StatCardSkeleton from '@/components/shared/admin/skeleton/stat-card-skeleton';
 
 export default function UserManagementPageSkeleton() {
   return (
@@ -18,7 +18,7 @@ export default function UserManagementPageSkeleton() {
       <div className="flex-1 flex flex-col min-h-0 gap-4">
         <div className="grid grid-cols-3 gap-8">
           {Array.from({ length: 3 }).map((_, i) => (
-            <UserStatCardSkeleton key={i} />
+            <StatCardSkeleton key={i} />
           ))}
         </div>
 

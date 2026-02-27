@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function UserStatCardSkeleton() {
+export default function StatCardSkeleton() {
   return (
     <div className="flex flex-col rounded-2xl border shadow-md p-6 gap-2">
       {/* Label skeleton */}

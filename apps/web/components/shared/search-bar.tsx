@@ -5,34 +5,29 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-import { useNavigation } from '@/contexts/navigation-context';
 import { IconSearch } from '@tabler/icons-react';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 
-export default function SearchBar({ placeholder }: { placeholder: string }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const { navigate } = useNavigation();
+type SearchBarProps = {
+  placeholder: string;
+  onSearch?: (value: string) => void;
+  defaultValue?: string;
+};
 
-  const currentSearch = searchParams.get('q') || '';
-
+export default function SearchBar({
+  placeholder,
+  onSearch,
+  defaultValue,
+}: SearchBarProps) {
   const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (term) params.set('q', term);
-    else params.delete('q');
-
-    params.set('page', '1'); // Reset to first page on new search
-
-    navigate(`${pathname}?${params.toString()}`);
+    onSearch?.(term);
   }, 300);
 
   return (
     <InputGroup className="h-12 rounded-full">
       <InputGroupInput
         placeholder={placeholder}
-        defaultValue={currentSearch}
+        defaultValue={defaultValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
       <InputGroupAddon>

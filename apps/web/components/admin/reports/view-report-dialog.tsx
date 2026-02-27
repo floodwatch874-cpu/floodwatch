@@ -29,16 +29,21 @@ import { format, parseISO } from 'date-fns';
 import { useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { verifyReport } from '@/lib/actions/report-actions';
+import { useSWRConfig } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function ViewReportDialog() {
   const { report, isOpen, closeDialog } = useReportDialog();
   const [isPending, setIsPending] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const handleVerify = async () => {
     if (!report) return;
     setIsPending(true);
     try {
       await verifyReport(report.id);
+      mutate(SWR_KEYS.reports);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {
       setIsPending(false);

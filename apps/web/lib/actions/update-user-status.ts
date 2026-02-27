@@ -1,15 +1,12 @@
 'use server';
 
 import { apiFetchServer } from '../api-fetch-server';
-import { revalidatePath } from 'next/cache';
 
 export async function blockUser(userId: number) {
   try {
     await apiFetchServer(`/admin/users/${userId}/block`, {
       method: 'PATCH',
     });
-
-    revalidatePath('/(admin)/admin/users');
 
     return { status: 'success' };
   } catch (error) {
@@ -23,8 +20,6 @@ export async function unblockUser(userId: number) {
     await apiFetchServer(`/admin/users/${userId}/unblock`, {
       method: 'PATCH',
     });
-
-    revalidatePath('/(admin)/admin/users');
 
     return { status: 'success' };
   } catch (error) {

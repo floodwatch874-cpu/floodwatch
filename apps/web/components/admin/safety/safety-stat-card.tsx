@@ -1,19 +1,20 @@
 import {
+  IconBuildingCommunity,
+  IconBuildingHospital,
   IconCircleCheck,
-  IconExclamationCircle,
-  IconReportAnalytics,
+  IconShieldPin,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 type UserStatCardProps = {
   label: string;
   count: number;
-  status: 'total' | 'verified' | 'unverified';
+  status: 'total' | 'shelter' | 'hospital';
   isActive: boolean;
   onClick: () => void;
 };
 
-export default function ReportStatCard({
+export default function SafetyStatCard({
   label,
   count,
   status,
@@ -21,21 +22,21 @@ export default function ReportStatCard({
   onClick,
 }: UserStatCardProps) {
   const iconMap = {
-    total: IconReportAnalytics,
-    verified: IconCircleCheck,
-    unverified: IconExclamationCircle,
+    total: IconShieldPin,
+    shelter: IconBuildingCommunity,
+    hospital: IconBuildingHospital,
   };
 
   const statusColorMap = {
     total: '#0066CC',
-    verified: '#00D69B',
-    unverified: '#F0B204',
+    shelter: '#7C3AED',
+    hospital: '#EC4899',
   };
 
   const statusTextMap = {
     total: 'Showing all reports',
-    verified: 'Filtered by verified reports',
-    unverified: 'Filtered by unverified reports',
+    shelter: 'Filtered by shelter locations',
+    hospital: 'Filtered by hospital locations',
   };
 
   const Icon = iconMap[status];

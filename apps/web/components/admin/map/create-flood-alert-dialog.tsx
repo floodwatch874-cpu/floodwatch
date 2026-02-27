@@ -30,14 +30,15 @@ import { toast } from 'sonner';
 import { createFloodAlertSchema } from '@repo/schemas';
 import { z } from 'zod';
 import { apiFetchClient } from '@/lib/api-fetch-client';
-import { useReports } from '@/hooks/use-reports';
+import { useSWRConfig } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function CreateFloodAlertDialog() {
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [open, setOpen] = useState(false);
-  const { mutateReports } = useReports();
+  const { mutate } = useSWRConfig();
 
   // form data
   const [locationNameValue, setLocationNameValue] = useState<
@@ -153,7 +154,8 @@ export default function CreateFloodAlertDialog() {
       setState({ status: 'success', errors: null });
       toast.success('Flood alert created successfully!');
       resetForm();
-      mutateReports(); // refresh reports list
+      mutate(SWR_KEYS.reports);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       setOpen(false);
     } catch (err) {
       console.error('Failed to create flood alert:', err);
@@ -265,6 +267,11 @@ export default function CreateFloodAlertDialog() {
                     defaultValue={locationNameValue}
                     onChange={(e) => setLocationNameValue(e.target.value)}
                   />
+                  {state.errors?.locationName && (
+                    <span className="text-sm text-red-600">
+                      {state.errors.locationName[0]}
+                    </span>
+                  )}
                 </Field>
 
                 {/* Severity Level */}

@@ -12,6 +12,7 @@ import { point } from '@turf/helpers';
 import type { Feature, Polygon, MultiPolygon } from 'geojson';
 import { toast } from 'sonner';
 import { SafetyMarker } from '@/components/markers/safety-marker';
+import { UserLocationMarker } from '@/components/markers/user-location-marker';
 
 type Props = {
   severity?: 'low' | 'moderate' | 'high' | 'critical';
@@ -38,6 +39,7 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
       longitude: number;
       latitude: number;
     } | null>(null);
+    const [isOutside, setIsOutside] = useState(false);
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -46,15 +48,39 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
         getUserLocation().then((pos) => {
           if (pos && mapRef.current) {
             const { longitude, latitude } = pos;
-            const newLocation = { longitude, latitude };
-            setLocation(newLocation);
-            onLocationSelect?.(newLocation);
 
             mapRef.current.flyTo({
               center: [longitude, latitude],
               zoom: 16,
               essential: true,
             });
+
+            if (caloocanGeoJSON) {
+              const locatedPoint = point([longitude, latitude]);
+              const features =
+                caloocanGeoJSON.type === 'FeatureCollection'
+                  ? caloocanGeoJSON.features
+                  : [caloocanGeoJSON];
+
+              const isInsideBoundary = features.some(
+                (feature: Feature<Polygon | MultiPolygon>) =>
+                  booleanPointInPolygon(locatedPoint, feature),
+              );
+
+              if (!isInsideBoundary) {
+                toast.error(
+                  'Your current location is outside of Caloocan boundaries.',
+                );
+                setIsOutside(true);
+                setLocation({ longitude, latitude });
+                return;
+              }
+              setIsOutside(false);
+            }
+
+            const newLocation = { longitude, latitude };
+            setLocation(newLocation);
+            onLocationSelect?.(newLocation);
           }
         }),
     }));
@@ -83,6 +109,7 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
         latitude: e.lngLat.lat,
       };
 
+      setIsOutside(false);
       setLocation(newLocation);
       onLocationSelect?.(newLocation);
     };
@@ -161,7 +188,9 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
             latitude={location.latitude}
             anchor="bottom"
           >
-            {mode === 'flood-alert' ? (
+            {isOutside ? (
+              <UserLocationMarker />
+            ) : mode === 'flood-alert' ? (
               <>
                 <RadiusCircle
                   longitude={location.longitude}

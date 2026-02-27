@@ -18,6 +18,8 @@ import { UserLocationMarker } from '../markers/user-location-marker';
 import { SearchLocationMarker } from '../markers/search-location-marker';
 import { useReports } from '@/hooks/use-reports';
 import { useBoundary } from '@/hooks/use-boundary';
+import { useSafetyLocations } from '@/hooks/use-safety';
+import { SafetyMarker } from '../markers/safety-marker';
 
 type SelectedLocation = {
   longitude: number;
@@ -45,6 +47,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       latitude: number;
     } | null>(null);
     const { reports } = useReports();
+    const { safetyLocations } = useSafetyLocations();
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -152,6 +155,18 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               severity={report.severity}
             />
           </Fragment>
+        ))}
+
+        {/* safety locations pin */}
+        {safetyLocations?.map((location) => (
+          <Marker
+            key={location.id}
+            longitude={location.longitude}
+            latitude={location.latitude}
+            anchor="bottom"
+          >
+            <SafetyMarker type={location.type} />
+          </Marker>
         ))}
 
         {/* user location pin */}

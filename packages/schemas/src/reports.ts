@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 
-export const floodAlertSchema = z.object({
+export const reportFloodAlertSchema = z.object({
   latitude: z.coerce.number(),
   longitude: z.coerce.number(),
   range: z.coerce.number(),
@@ -46,12 +46,12 @@ export const reportQuerySchema = z.object({
   q: z.string().optional(),
 });
 
-export class FloodAlertDto extends createZodDto(floodAlertSchema) {}
+export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
 export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
 export class ReportsDto extends createZodDto(reportsSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
 
-export type FloodAlertInput = z.infer<typeof floodAlertSchema>;
+export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
 export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
 export type ReportsInput = z.infer<typeof reportsSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;

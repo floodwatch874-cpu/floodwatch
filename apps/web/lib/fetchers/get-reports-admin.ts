@@ -1,10 +1,9 @@
 'use server';
 
-import { reportQuerySchema } from '@repo/schemas';
+import { ReportQueryInput, reportQuerySchema } from '@repo/schemas';
 import { apiFetchServer } from '../api-fetch-server';
-import { ReportQuery } from '../types/report-query';
 
-export async function getReportsData(params: ReportQuery) {
+export async function getReportsAdmin(params: ReportQueryInput) {
   const parsed = reportQuerySchema.safeParse(params);
 
   if (!parsed.success) {

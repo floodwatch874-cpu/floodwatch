@@ -30,14 +30,15 @@ import { toast } from 'sonner';
 import { createSafetyLocationSchema } from '@repo/schemas';
 import { z } from 'zod';
 import { apiFetchClient } from '@/lib/api-fetch-client';
-import { useReports } from '@/hooks/use-reports';
+import { useSWRConfig } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
-export default function CreateFloodAlertDialog() {
+export default function CreateSafetyLocationDialog() {
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [open, setOpen] = useState(false);
-  const { mutateReports } = useReports();
+  const { mutate } = useSWRConfig();
 
   // form data
   const [locationNameValue, setLocationNameValue] = useState<
@@ -156,7 +157,10 @@ export default function CreateFloodAlertDialog() {
       setState({ status: 'success', errors: null });
       toast.success('Safety location created successfully!');
       resetForm();
-      mutateReports(); // refresh reports list
+      mutate(SWR_KEYS.safetyLocations);
+      mutate(
+        (key) => Array.isArray(key) && key[0] === SWR_KEYS.safetyLocationsAdmin,
+      );
       setOpen(false);
     } catch (err) {
       console.error('Failed to create safety location:', err);

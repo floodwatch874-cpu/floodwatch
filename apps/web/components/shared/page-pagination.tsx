@@ -9,7 +9,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { useNavigation } from '@/contexts/navigation-context';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 type PagePaginationProps = {
@@ -17,6 +16,7 @@ type PagePaginationProps = {
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
+  onPageChange: (page: number) => void;
 };
 
 export default function PagePagination({
@@ -24,11 +24,11 @@ export default function PagePagination({
   totalPages,
   hasNextPage,
   hasPrevPage,
+  onPageChange,
 }: PagePaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(currentPageProp);
-  const { navigate } = useNavigation();
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -46,22 +46,11 @@ export default function PagePagination({
       }
     } else {
       pages.push(1);
-
-      if (currentPage > 3) {
-        pages.push('...');
-      }
-
+      if (currentPage > 3) pages.push('...');
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push('...');
-      }
-
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push('...');
       pages.push(totalPages);
     }
 
@@ -80,7 +69,7 @@ export default function PagePagination({
             className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
             onClick={(e) => {
               e.preventDefault();
-              if (hasPrevPage) navigate(createPageUrl(currentPage - 1));
+              if (hasPrevPage) onPageChange(currentPage - 1);
             }}
           />
         </PaginationItem>
@@ -102,7 +91,7 @@ export default function PagePagination({
                 isActive={pageNum === currentPage}
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(createPageUrl(pageNum));
+                  onPageChange(pageNum);
                 }}
               >
                 {pageNum}
@@ -118,7 +107,7 @@ export default function PagePagination({
             className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
             onClick={(e) => {
               e.preventDefault();
-              if (hasNextPage) navigate(createPageUrl(currentPage + 1));
+              if (hasNextPage) onPageChange(currentPage + 1);
             }}
           />
         </PaginationItem>

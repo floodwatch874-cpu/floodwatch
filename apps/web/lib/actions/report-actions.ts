@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { apiFetchServer } from '../api-fetch-server';
 
 export async function verifyReport(reportId: string) {
@@ -8,8 +7,6 @@ export async function verifyReport(reportId: string) {
     await apiFetchServer(`/reports/${reportId}`, {
       method: 'PATCH',
     });
-
-    revalidatePath('/(admin)/admin/reports');
 
     return { status: 'success' };
   } catch (error) {
@@ -23,8 +20,6 @@ export async function deleteReport(reportId: string) {
     await apiFetchServer(`/reports/${reportId}`, {
       method: 'DELETE',
     });
-
-    revalidatePath('/(admin)/admin/reports');
 
     return { status: 'success' };
   } catch (error) {

@@ -1,9 +1,9 @@
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FloodReportsDataTableSkeleton } from './flood-reports-data-table-skeleton';
 import StatCardSkeleton from '@/components/shared/admin/skeleton/stat-card-skeleton';
+import { SafetyLocationsDataTableSkeleton } from './safety-locations-data-table-skeleton';
 
-export default function FloodReportsPageSkeleton() {
+export default function SafetyLocationsPageSkeleton() {
   return (
     <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
       {/* Header */}
@@ -21,7 +21,7 @@ export default function FloodReportsPageSkeleton() {
           ))}
         </div>
 
-        <FloodReportsDataTableSkeleton />
+        <SafetyLocationsDataTableSkeleton />
 
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-40" />
