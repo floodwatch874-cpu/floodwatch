@@ -6,7 +6,7 @@ export default function MapLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <PanelContextProvider>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-dvh overscroll-none overflow-hidden">
         <TopNav />
         <main className="flex-1 overflow-hidden">{children}</main>
       </div>

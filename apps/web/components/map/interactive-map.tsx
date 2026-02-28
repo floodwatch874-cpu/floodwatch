@@ -102,6 +102,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           zoom: 11.5,
         }}
         mapStyle="https://tiles.openfreemap.org/styles/bright"
+        attributionControl={false}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (

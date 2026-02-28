@@ -1,22 +1,22 @@
+import { useEffect, useRef } from 'react';
+
 import { ReportsDto } from '@repo/schemas';
 import Image from 'next/image';
 import {
-  IconArrowBearRight2,
   IconChevronLeft,
   IconCircleCheck,
   IconCircleDashed,
   IconClock,
-  IconUsers,
+  IconMessageCircle,
 } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CommunityTab from '@/components/map/community-tab';
-import DirectionTab from '@/components/map/direction-tab';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 import {
   REPORT_STATUS_COLOR_MAP,
   SEVERITY_COLOR_MAP,
 } from '@/lib/utils/get-color-map';
+import PostComposer from '@/components/shared/post-composer';
+import PostCard from '@/components/shared/post-card';
 
 export default function AffectedLocationsPanel({
   report,
@@ -25,6 +25,15 @@ export default function AffectedLocationsPanel({
   report: ReportsDto;
   onClose?: () => void;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // scroll to top when report changes
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [report?.id]);
+
   return (
     <div className="relative w-full h-full bg-white z-50 min-h-0 flex flex-col max-w-lg pointer-events-auto">
       <button
@@ -34,8 +43,8 @@ export default function AffectedLocationsPanel({
       >
         <IconChevronLeft className="w-[1.5em]! h-[1.5em]!" />
       </button>
-      <ScrollArea className="relative w-full h-full overflow-visible z-50">
-        <div className="aspect-video w-full relative bg-muted shrink-0">
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="aspect-video w-full relative bg-muted shrink-0 ">
           {report?.image ? (
             <Image
               src={report.image}
@@ -61,7 +70,7 @@ export default function AffectedLocationsPanel({
             {report?.location}
           </h3>
 
-          {/* row 3 */}
+          {/* row 2 */}
           <div className="flex flex-row justify-between gap-4">
             {/* reported at */}
             <div className="flex items-center text-sm gap-2 text-gray-600">
@@ -73,7 +82,7 @@ export default function AffectedLocationsPanel({
 
             {/* severity level */}
             <div className="flex items-center gap-2 text-gray-600">
-              <span className="text-sm">Severity Level:</span>
+              <span className="font-poppins text-sm">SEVERITY LEVEL:</span>
               <div
                 className="flex items-center rounded-full px-3 py-1"
                 style={{
@@ -88,16 +97,16 @@ export default function AffectedLocationsPanel({
             </div>
           </div>
 
-          {/* row 4 */}
+          {/* row 3 */}
           <div className="flex flex-row justify-between gap-4">
             {/* reported by */}
-            <div className="flex items-center gap-2 text-gray-600 text-sm">
-              <span className="">Reported by:</span>
-              <span className="font-medium">{report?.reporter?.name}</span>
+            <div className="flex flex-col text-gray-600 text-sm">
+              <span className="font-poppins font-medium">REPORTED BY:</span>
+              <span>{report?.reporter?.name}</span>
             </div>
 
             <div
-              className="flex items-center rounded-full px-3 py-1 w-fit"
+              className="flex items-center rounded-full px-3 py-1 w-fit h-fit"
               style={{
                 color: REPORT_STATUS_COLOR_MAP[report?.status],
                 backgroundColor: `${REPORT_STATUS_COLOR_MAP[report?.status]}25`,
@@ -116,44 +125,33 @@ export default function AffectedLocationsPanel({
             </div>
           </div>
         </div>
-        <Tabs
-          defaultValue="direction"
-          className="flex-1 flex flex-col h-full min-h-0 pt-4"
-        >
-          <div className="w-full border-b shrink-0">
-            <TabsList variant="line" className="font-poppins w-full">
-              <TabsTrigger
-                value="direction"
-                className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
-              >
-                <IconArrowBearRight2 />
-                Direction
-              </TabsTrigger>
-              <TabsTrigger
-                value="community"
-                className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
-              >
-                <IconUsers />
-                Community
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          <TabsContent
-            value="direction"
-            className="flex-1 flex flex-col min-h-0 p-4"
-          >
-            <DirectionTab report={report} />
-          </TabsContent>
-          <TabsContent
-            value="community"
-            className="flex-1 flex flex-col min-h-0 p-4"
-          >
-            <CommunityTab />
-          </TabsContent>
-        </Tabs>
-      </ScrollArea>
+
+        {/* label */}
+        <div className="flex items-center gap-2 p-4 border-y text-lg">
+          <IconMessageCircle className="w-[1.5em]! h-[1.5em]!" />
+          <span className="font-poppins font-medium">COMMUNITY UPDATES</span>
+        </div>
+
+        {/* comments */}
+        <div className="flex flex-col gap-6 p-4">
+          <PostComposer />
+
+          <PostCard
+            author={{ name: 'Pedro Santos' }}
+            content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
+            timestamp="1 day ago"
+            reportCount={2}
+          />
+
+          <PostCard
+            author={{ name: 'Juan Dela Cruz' }}
+            content="Heavy rainfall in Zapote area, its starting to accumulate water. Please be careful if you're heading this way! #Flood"
+            imageUrl="/images/before_flood_image.jpg"
+            timestamp="2 hrs ago"
+            reportCount={3}
+          />
+        </div>
+      </div>
     </div>
   );
 }

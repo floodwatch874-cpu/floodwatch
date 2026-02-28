@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
-import PostComposer from '@/components/admin/feed/post-composer';
-import PostCard from '@/components/admin/feed/post-card';
+import PostComposer from '@/components/shared/post-composer';
+import PostCard from '@/components/shared/post-card';
 import { IconMapPin } from '@tabler/icons-react';
 
 export default function CommunityFeedLeft() {
@@ -25,7 +25,6 @@ export default function CommunityFeedLeft() {
           <PostCard
             author={{ name: 'Pedro Santos' }}
             content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
-            location="BRGY 174, Kai mall caloocan city"
             timestamp="1 day ago"
             reportCount={2}
           />
@@ -34,7 +33,6 @@ export default function CommunityFeedLeft() {
             author={{ name: 'Juan Dela Cruz' }}
             content="Heavy rainfall in Zapote area, its starting to accumulate water. Please be careful if you're heading this way! #Flood"
             imageUrl="/images/before_flood_image.jpg"
-            location="BRGY 174, Kai mall caloocan city"
             timestamp="2 hrs ago"
             reportCount={3}
           />
@@ -43,7 +41,6 @@ export default function CommunityFeedLeft() {
             author={{ name: 'Maria Clara' }}
             content="The flood levels are rising quickly. Evacuation centers are being set up. Stay safe everyone!"
             imageUrl="/images/after_flood_image.jpg"
-            location="BRGY 174, Kai mall caloocan city"
             timestamp="24 hrs ago"
             reportCount={5}
           />
